@@ -1,0 +1,136 @@
+@import "~antd/es/style/themes/default.less";
+
+.List {
+  border-radius: 4px;
+  margin: 12px 0;
+  background: #fff;
+  overflow: hidden;
+  &:hover {
+    box-shadow: 0 3px 6px -4px rgba(0, 0, 0, 0.12),
+      0 6px 16px 0 rgba(0, 0, 0, 0.08), 0 9px 28px 8px rgba(0, 0, 0, 0.05);
+  }
+  .focus {
+    box-shadow: 0 3px 6px -4px rgba(0, 0, 0, 0.12),
+      0 6px 16px 0 rgba(0, 0, 0, 0.08), 0 9px 28px 8px rgba(0, 0, 0, 0.05);
+  }
+
+  .item {
+    position: relative;
+    padding: 10px;
+    border: 1px solid #edf1f5;
+    .active {
+      border-color: #377dea !important;
+    }
+    .imgBox {
+      width: 98px;
+      height: 98px;
+      border-radius: 50%;
+      background: #f7f8fb;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      .img {
+        width: 58px;
+        height: 58px;
+      }
+    }
+    .content {
+      display: flex;
+      flex-direction: column;
+      flex-wrap: nowrap;
+      padding-left: 20px;
+      .contentTop {
+        .name {
+          max-width: 500px;
+          font-size: 16px;
+          line-height: 24px;
+          margin-left: 10px;
+        }
+      }
+      .contentCenter {
+        display: flex;
+        font-size: 12px;
+        padding-top: 16px;
+        text-align: left;
+        line-height: 24px;
+        padding-right: 8px;
+        .cell {
+          display: flex;
+          overflow: hidden;
+        }
+        .lable {
+          color: #b1bcd1;
+          display: inline-block;
+        }
+        .text {
+          display: inline-block;
+          vertical-align: bottom;
+        }
+      }
+      .contentBottom {
+        text-align: center;
+        color: #ee921a;
+        font-size: 14px;
+        .open {
+          transform: rotate(-90deg);
+        }
+        .close {
+          transform: rotate(90deg);
+        }
+      }
+    }
+    .Approval {
+      width: 200px;
+      position: absolute;
+      right: 1%;
+      .lable {
+        font-size: 14px;
+        font-weight: 400;
+        color: rgba(72, 87, 113, 1);
+        line-height: 20px;
+      }
+      .text {
+        font-size: 14px;
+        font-weight: 400;
+        line-height: 20px;
+        margin-top: 3px;
+        text-align: center;
+      }
+    }
+  }
+}
+
+.btns {
+  float: right;
+  position: absolute;
+  right: 3%;
+  top: 75%;
+  z-index: 99;
+}
+
+.address {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media screen and (max-width: @screen-xs) {
+  .listCard {
+    :global {
+      .ant-card-head-title {
+        overflow: visible;
+      }
+    }
+  }
+}
+
+@media screen and (max-width: @screen-md) {
+  .listCard {
+    :global {
+      .ant-radio-group {
+        display: block;
+        margin-bottom: 8px;
+      }
+    }
+  }
+}

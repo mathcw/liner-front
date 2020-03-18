@@ -1,0 +1,553 @@
+@import "~antd/es/style/themes/default.less";
+
+html,
+body #root {
+  height: 100%;
+}
+
+.colorWeak {
+  filter: invert(80%);
+}
+
+.ant-layout {
+  min-height: 100vh;
+}
+
+canvas {
+  display: block;
+}
+
+body {
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+ul,
+ol {
+  list-style: none;
+}
+
+.dib {
+  display: inline-block;
+}
+
+.hide {
+  display: none !important;
+}
+
+.container {
+  height: 100vh;
+  overflow: auto;
+}
+
+@media (max-width: @screen-xs) {
+  .ant-table {
+    width: 100%;
+    overflow-x: auto;
+    &-thead > tr,
+    &-tbody > tr {
+      > th,
+      > td {
+        white-space: pre;
+        > span {
+          display: block;
+        }
+      }
+    }
+  }
+}
+
+.ListTableStyle {
+  :global {
+    // 最低400px,否则没有数据的话左右滚动条会在table-headr下,难看
+    .ant-table-body {
+      background-color: #fff;
+      min-height: 400px !important;
+    }
+    .ant-table-placeholder {
+      display: none;
+    }
+    // headerCell是inline-block,宽度不沾满,icon+号不能居中
+    .ant-table-header-column {
+      width: 100%;
+    }
+    // header 设置
+    .ant-table-thead > tr {
+      background-color: #fff;
+    }
+    // 不带sort的表头居中
+    .ant-table-thead > tr > th,
+    .ant-table-tbody > tr > td {
+      // padding: 12px 16px;
+      padding: 8px 16px;
+      text-align: center;
+    }
+    // 限制最大宽度 600px(但是由于存在类似flex的属性,所以并不能严格限定300px)
+    // (给的稍微大了点,因为action的width超过300就给裁掉了,但是resizeble更改宽度并不受影响)
+    .ant-table-thead > tr > th,
+    .ant-table-tbody > tr > td {
+      max-width: 600px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    // fixed 同下
+    .ant-table-fixed-left,
+    .ant-table-fixed-right {
+      overflow: visible;
+    }
+    // 存在 fixed 的表格,cell不需要overflow,否则action按钮Modal会被隐藏
+    .ant-table-fixed .ant-table-thead > tr > th,
+    .ant-table-tbody > tr > td {
+      overflow: visible;
+    }
+    // 带sort的 表头 居中
+    .ant-table-column-has-sorters{
+      text-align: center;
+    }
+    // 下拉条设置
+    .ant-table-body::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    .ant-table-body::-webkit-scrollbar-button {
+      background-color: #fff;
+    }
+    .ant-table-body::-webkit-scrollbar-track {
+      background: rgb(233, 222, 228);
+    }
+    .ant-table-body::-webkit-scrollbar-thumb {
+      background: rgb(195, 221, 217);
+    }
+    .ant-table-body::-webkit-scrollbar-corner {
+      background: #82afff;
+    }
+    .ant-table-body::-webkit-scrollbar-resizer {
+      background: #ff0bee;
+    }
+  }
+}
+
+.OpTableStyle {
+  :global {
+    .ant-table-body {
+      background-color: #fff;
+    }
+    .ant-table-header-column {
+      width: 100%;
+    }
+    .ant-table-thead > tr {
+      background-color: #fff;
+    }
+    .ant-table-thead > tr > th,
+    .ant-table-tbody > tr > td {
+      padding: 8px 16px;
+      text-align: center;
+    }
+    .ant-table-thead > tr > th,
+    .ant-table-tbody > tr > td {
+      max-width: 600px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .ant-table-fixed-left,
+    .ant-table-fixed-right {
+      overflow: visible;
+    }
+    .ant-table-fixed .ant-table-thead > tr > th,
+    .ant-table-tbody > tr > td {
+      overflow: visible;
+    }
+    .ant-table-column-has-sorters{
+      text-align: center;
+    }
+    .ant-table-body::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    .ant-table-body::-webkit-scrollbar-button {
+      background-color: #fff;
+    }
+    .ant-table-body::-webkit-scrollbar-track {
+      background: rgb(233, 222, 228);
+    }
+    .ant-table-body::-webkit-scrollbar-thumb {
+      background: rgb(195, 221, 217);
+    }
+    .ant-table-body::-webkit-scrollbar-corner {
+      background: #82afff;
+    }
+    .ant-table-body::-webkit-scrollbar-resizer {
+      background: #ff0bee;
+    }
+  }
+}
+
+.container {
+  height: 100vh;
+  overflow: auto;
+}
+// ==================================== 通用 全局 CSS =====================================
+
+.textOverflow() {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  word-break: break-all;
+}
+
+.textOverflowMulti(@line: 3, @bg: #fff) {
+  position: relative;
+  max-height: @line * 1.5em;
+  margin-right: -1em;
+  padding-right: 1em;
+  overflow: hidden;
+  line-height: 1.5em;
+  text-align: justify;
+  &::before {
+    position: absolute;
+    right: 14px;
+    bottom: 0;
+    padding: 0 1px;
+    background: @bg;
+    content: '...';
+  }
+  &::after {
+    position: absolute;
+    right: 14px;
+    width: 1em;
+    height: 1em;
+    margin-top: 0.2em;
+    background: white;
+    content: '';
+  }
+}
+
+// mixins for clearfix
+// ------------------------
+.clearfix() {
+  zoom: 1;
+  &::before,
+  &::after {
+    display: table;
+    content: ' ';
+  }
+  &::after {
+    clear: both;
+    height: 0;
+    font-size: 0;
+    visibility: hidden;
+  }
+}
+
+.react-resizable {
+  position: relative;
+}
+
+.react-resizable-handle {
+  position: absolute;
+  width: 10px;
+  height: 100%;
+  bottom: 0;
+  right: 0;
+  cursor: col-resize;
+}
+
+.hide {
+  display: none !important;
+}
+
+/* w h */
+.w-20 {
+  width: 20%;
+}
+.w-25 {
+  width: 25%;
+}
+
+/* padding & margin */
+.p-0 {
+  padding: 0 !important;
+}
+.m-0 {
+  margin: 0 !important;
+}
+
+.m-t-4 {
+  margin-top: 4px;
+}
+.m-b-4 {
+  margin-bottom: 4px;
+}
+.m-r-4 {
+  margin-right: 4px;
+}
+.m-l-4 {
+  margin-left: 4px;
+}
+.m-t-8 {
+  margin-top: 8px;
+}
+.m-b-8 {
+  margin-bottom: 8px;
+}
+.m-r-8 {
+  margin-right: 8px;
+}
+.m-l-8 {
+  margin-left: 8px;
+}
+.m-b-16 {
+  margin-bottom: 16px;
+}
+.m-t-16 {
+  margin-top: 16px;
+}
+
+// 行内元素
+.dib {
+  display: inline-block;
+}
+
+/* flex */
+.flex {
+  display: flex !important;
+}
+.flex-j-sb {
+  display: flex !important;
+  justify-content: space-between !important;
+}
+.flex-j-sa {
+  display: flex !important;
+  justify-content: space-around !important;
+}
+.flex-a-c {
+  display: flex !important;
+  align-items: center !important;
+}
+.flex-c {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+}
+
+.Spin-box {
+  background: rgba(0, 0, 0, 0.1);
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+// 清除浮动
+.clear:after {
+  content: ".";
+  display: block;
+  height: 0;
+  visibility: hidden;
+  clear: both;
+}
+
+// 不滚动,不隐藏
+.noOver {
+  overflow: visible !important;
+}
+
+// 透明度
+.opcity-1 {
+  opacity: 1 !important;
+}
+
+.opcity-0 {
+  opacity: 0 !important;
+}
+
+/* img */
+.img-size {
+  width: 100%;
+  height: 100%;
+}
+.img-initial {
+  width: -webkit-fill-available;
+  height: -webkit-fill-available;
+}
+
+/* text */
+.imp-text {
+  font-size: 14px;
+  // font-weight: bold;
+  color: rgba(233, 13, 13, 0.986);
+}
+
+/* text-align */
+.text-left {
+  text-align: left;
+}
+.text-center {
+  text-align: center;
+}
+.text-right {
+  text-align: right;
+}
+
+/* hide */
+.hide {
+  display: none !important;
+}
+/* 鼠标样式 */
+.pointer {
+  cursor: pointer;
+}
+/* 透明度 */
+.opcity0 {
+  opacity: 0;
+}
+/* 圆角 */
+.border-radius {
+  border-radius: 4px;
+}
+
+/* 阴影 */
+.box-shadow {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+// 颜色
+.active {
+  color: #377dea;
+}
+.primary {
+  color: #00a36a;
+}
+.danger {
+  color: #f43266;
+}
+
+.light {
+  color: #b1bcd1;
+}
+.default {
+  color: #485771;
+}
+.dark {
+  color: #2e3a4e;
+}
+
+/* mod 间距 */
+.mod {
+  margin-top: 32px;
+  background: #fff;
+  border-radius: 4px;
+}
+
+/* 多行文本省略 */
+.text-overflow {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.text-overflow-2 {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  /* 这两个注释不能干掉,干掉了webpack就不编译这个属性了,在控制台就检查不到了,就GG了 */
+  /* autoprefixer: off */
+  -webkit-box-orient: vertical;
+  /* autoprefixer: on */
+  /* 展开 干掉这个属性就行 */
+  -webkit-line-clamp: 2;
+}
+.text-overflow-3 {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  /* 这两个注释不能干掉,干掉了webpack就不编译这个属性了,在控制台就检查不到了,就GG了 */
+  /* autoprefixer: off */
+  -webkit-box-orient: vertical;
+  /* autoprefixer: on */
+  /* 展开 干掉这个属性就行 */
+  -webkit-line-clamp: 3;
+}
+.text-overflow-4 {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  /* 这两个注释不能干掉,干掉了webpack就不编译这个属性了,在控制台就检查不到了,就GG了 */
+  /* autoprefixer: off */
+  -webkit-box-orient: vertical;
+  /* autoprefixer: on */
+  /* 展开 干掉这个属性就行 */
+  -webkit-line-clamp: 4;
+}
+
+// ========================================通用样式
+.mod-title {
+  height: 44px;
+  line-height: 44px;
+  padding: 0 12px;
+  display: flex;
+  justify-content: space-between;
+}
+.mod-text {
+  font-size: 16px;
+  font-weight: 600;
+  color: #2e3a4e;
+}
+.mod-more {
+  font-size: 12px;
+  color: #b1bcd1;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+.mod-more > i {
+  margin-left: 2px;
+  margin-right: 12px;
+}
+
+.mod-title-one {
+  height: 44px;
+  line-height: 44px;
+  padding: 0 12px;
+  background: #fff;
+  border-radius: 4px;
+  margin-bottom: 4px;
+  display: flex;
+  justify-content: space-between;
+}
+
+// antd 对话框覆盖
+.modal-confirm-body {
+  .ant-modal-confirm-content {
+    margin: 0 !important;
+  }
+  .ant-modal-body .ant-modal-confirm-body .ant-modal-confirm-title {
+    margin: -32px -32px 0 -32px;
+    line-height: 48px;
+    text-indent: 2em;
+    border-bottom: 1px solid #ccc;
+  }
+}
+
+.form-item-required::before{
+  display: inline-block;
+  margin-right: 4px;
+  color: #f5222d;
+  font-size: 14px;
+  font-family: SimSun,sans-serif;
+  line-height: 1;
+  content: "*";
+}
+
+:global {
+  .ant-legacy-form-item .ant-legacy-form-item-control-wrapper {
+    width: 100%;
+  }
+}

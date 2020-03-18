@@ -1,0 +1,78 @@
+@import "~antd/es/style/themes/default.less";
+
+.headerWrapper {
+  :global {
+    .ant-pro-page-header-wrap-children-content {
+      margin: 0px !important;
+    }
+  }
+}
+
+.HeaderOperator {
+  padding-top: 16px;
+  padding-bottom: 16px;
+  button {
+    margin-right: 8px;
+    border: 2px solid #5f6368;
+  }
+}
+
+.HeaderForm {
+  padding-top: 6px;
+  padding-bottom: 6px;
+  .submitButtons {
+    height: 32px;
+    line-height: 32px;
+    display: block;
+    white-space: nowrap;
+  }
+  .leftSearch {
+    line-height: 32px;
+    align-items: center;
+  }
+  .leftIcon {
+    height: 32px;
+    line-height: 32px;
+    display: flex;
+    align-items: center;
+  }
+  .rightSearch {
+    height: 32px;
+    line-height: 32px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    & > div > span {
+      white-space: nowrap;
+    }
+    :global {
+      .ant-select-selection-item {
+        padding: 0px !important;
+      }
+    }
+    .Icon {
+      width: 32px;
+      height: 32px;
+      font-size: 20px;
+      line-height: 32px;
+      color: #3fb50b;
+      margin: 0 4px;
+      cursor: pointer;
+    }
+    .Icon:active i {
+      transform: scale(1.2);
+    }
+  }
+}
+
+@media screen and (max-width: @screen-lg) {
+  .tableListForm :global(.ant-form-item) {
+    margin-right: 24px;
+  }
+}
+
+@media screen and (max-width: @screen-md) {
+  .tableListForm :global(.ant-form-item) {
+    margin-right: 8px;
+  }
+}

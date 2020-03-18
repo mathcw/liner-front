@@ -1,0 +1,42 @@
+@import '~antd/es/style/themes/default.less';
+
+.main {
+  width: 368px;
+  margin: 0 auto;
+  @media screen and (max-width: @screen-sm) {
+    width: 95%;
+  }
+
+  .icon {
+    color: rgba(0, 0, 0, 0.2);
+    vertical-align: middle;
+    cursor: pointer;
+    transition: color 0.3s;
+
+    &:hover {
+      color: @primary-color;
+    }
+  }
+
+  .input{
+    border-radius:2px;
+  }
+
+  .btn{
+    width: 100%;
+  }
+
+  :global {
+    .ant-tabs .ant-tabs-bar {
+      margin-bottom: 24px;
+      text-align: center;
+      border-bottom: 0;
+    }
+
+    .ant-form-item {
+      margin: 0 2px 24px;
+    }
+  }
+
+
+}

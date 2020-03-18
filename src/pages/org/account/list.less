@@ -1,0 +1,36 @@
+@import "~antd/es/style/themes/default.less";
+
+.lable{ 
+    font-size:14px;
+    font-weight:400;
+    color:rgba(72,87,113,1);
+    line-height:20px;
+}
+.text{
+    font-size:14px;
+    font-weight:400;
+    line-height:20px;
+    margin-top: 3px;
+    text-align: center;
+}
+
+@media screen and (max-width: @screen-xs) {
+  .listCard {
+    :global {
+      .ant-card-head-title {
+        overflow: visible;
+      }
+    }
+  }
+}
+
+@media screen and (max-width: @screen-md) {
+  .listCard {
+    :global {
+      .ant-radio-group {
+        display: block;
+        margin-bottom: 8px;
+      }
+    }
+  }
+}

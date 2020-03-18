@@ -1,0 +1,198 @@
+@import '~antd/es/style/themes/default.less';
+.Supplier {
+    border-radius: 4px;
+    margin: 12px 0;
+    background: #fff;
+    overflow: hidden;
+    &:hover {
+        box-shadow: @box-shadow-base;
+        background: #fff;
+    }
+    .top {
+        padding: 10px;
+        border: 1px solid #edf1f5;
+        border-radius: 4px;
+        overflow: hidden;
+        display: flex;
+        .imgBox {
+            width:98px;
+            height:98px;
+            border-radius:50%;
+            background:#F7F8FB;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            .img {
+                width: 58px;
+                height: 58px;
+            }
+            .text {
+                font-size:12px;
+                font-weight:400;
+                color:#6384E7;
+                line-height:17px;
+                top: 70%;
+                left: 31%;
+                position: absolute;
+            }
+        }
+        .RTop {
+            display: flex;
+            align-items: center;
+            .name {
+                max-width: 500px;
+                font-size:14px;
+                font-weight:400;
+                color:rgba(46,58,78,1);
+                line-height:20px;
+            }
+            .tag {
+                font-size: 12px;
+                line-height: 20px;
+                padding: 0px 8px;
+                font-weight:400;
+                color:rgba(86,121,225,1);
+                border-radius:9px;
+                border:1px solid rgba(90,125,230,1);
+            }
+        }
+        .RCenter {
+            font-size: 12px;
+            padding-top: 2px;
+            text-align: left;
+            display: flex;
+            height: 73px;
+            margin-top: 4px;
+            .RCenterL {
+                line-height: 24px;
+                padding-right: 8px;
+                .lable {
+                    color: #b1bcd1;
+                    display: inline-block;
+                }
+                .text {
+                    display: inline-block;
+                    vertical-align: bottom;
+                }
+                .text2 {
+                    width: 120px !important;
+                    vertical-align: bottom;
+                }
+            }
+            .RCenterR {
+                line-height: 24px;
+                padding-left: 8px;
+                margin-left: -30px;
+                .infoRow {
+                    display: flex;
+                    .infoCell {
+                        width: 160px;
+                        margin-right: 24px;
+                        .lable {
+                            width: 64px;
+                            color: #b1bcd1;
+                            display: inline-block;
+                        }
+                        .text {
+                            width: 96px;
+                            display: inline-block;
+                            vertical-align: bottom;
+                        }
+                    }
+                }
+            }
+        }
+        .Approval{
+            width: 200px;
+            position: absolute;
+            top: 0%;
+            right: 1%;
+            .lable{ 
+                font-size:14px;
+                font-weight:400;
+                color:rgba(72,87,113,1);
+                line-height:20px;
+            }
+            .text{
+                font-size:14px;
+                font-weight:400;
+                line-height:20px;
+                margin-top: 3px;
+                text-align: center;
+            }
+            .plan{
+                margin-top: 4px;
+                cursor: pointer;
+                .text1{
+                    width: 25px;
+                    height: 25px;
+                }
+                .query{
+                    font-size: 12px;
+                    line-height: 25px;
+                    color: #518FEF;
+                }
+            }           
+        }
+        .RBtm {
+            height: 32px;
+            line-height: 32px;
+            clear: both;
+            margin-bottom: -3px;
+            .RBtmL {
+                height: 32px;
+                overflow: hidden;
+                & > div {
+                    font-size: 12px;
+                    font-weight:400;
+                    line-height:18px;
+                    color: rgba(177,188,209,1);
+                    border-radius:12px;
+                    border:1px solid rgba(177,188,209,1);
+                    padding: 0 8px;
+                    margin-right: 16px;
+                    display: inline-block;
+                    cursor: pointer;
+                }
+            }
+            .btns {
+                margin: 0 4px;
+                background:rgba(255,255,255,1);
+                border-radius:4px;
+                border:1px solid rgba(177,188,209,1);
+                font-size:12px;
+                font-weight:400;
+                color:rgba(46,58,78,1);
+                line-height:17px;
+            }
+        }
+    }
+    .topActive {
+        border: 1px solid #3d81ea;
+    }
+}
+
+.btns{
+    float: right;
+    position: absolute;
+    right: 3%;
+    top: 75%;
+    z-index: 99;
+    .button{
+        background:rgba(255,255,255,1);
+        border-radius:4px;
+        border:1px solid rgba(177,188,209,1);
+        font-size:12px;
+        font-weight:400;
+        color:rgba(46,58,78,1);
+        line-height:17px;
+        height: 21px;
+        margin-right: 5px;
+    }
+}
+
+.address{
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
