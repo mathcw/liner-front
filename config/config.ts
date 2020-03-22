@@ -120,7 +120,7 @@ export default {
   manifest: {
     basePath: '/liner-build',
   },
-  outputPath:'../liner-build',
+  // outputPath:'../liner-build',
   base:'/liner-build',
   // chainWebpack: webpackPlugin,
   proxy: {
