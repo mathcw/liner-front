@@ -188,7 +188,7 @@ export function btnClickEvent(btns?: object, actionMap?: object) {
   return newBtns;
 }
 
-export const getRowBtnArray = function<T>(data: T, btns: IModBtn[]) {
+export const getRowBtnArray = function <T>(data: T, btns: IModBtn[]) {
   let rst: IModBtn[] = [];
   if (!btns) {
     return rst;
@@ -201,7 +201,7 @@ export const getRowBtnArray = function<T>(data: T, btns: IModBtn[]) {
         const flag = Object.keys(btn.show)
           .map(item => {
             if (btn.show && btn.show[item].indexOf(data[item]) === -1) {
-              if (Number(data[item])!==0 && !Number(data[item]))
+              if (Number(data[item]) !== 0 && !Number(data[item]))
                 return false;
               if (btn.show[item].indexOf(Number(data[item])) === -1)
                 return false;
@@ -227,7 +227,7 @@ export function isNotUndefined<T>(arg: T | undefined): arg is T {
 }
 
 export function colDisplay(
-  v: string | number | string[] | number[] |undefined,
+  v: string | number | string[] | number[] | undefined,
   type: string,
   row: any
 ) {
@@ -285,4 +285,16 @@ export function colorfun(item: { flow: string | number; }) {
       flowColor = { color: '#333' }
   }
   return flowColor;
+}
+
+export function dock_height(showSerach: boolean = true) {
+  const curWidth = window.innerWidth;
+  const curHight = window.innerHeight;
+  let height = curHight;
+  if(curWidth > 990){
+    height = curHight - 154 - (showSerach?106:0);
+  }else{
+    height = curHight - 154 - (showSerach?146:0);
+  }
+  return height;
 }

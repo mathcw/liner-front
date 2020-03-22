@@ -6,14 +6,21 @@ import { IActionPageProps } from '@/viewconfig/ActionConfig';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import renderHeaderBtns from '@/components/PageHeaderWrapper/headerBtns';
 
-import { useActionPage, useActionBtn } from '@/utils/ActionPageHooks';
-import { submit, upload } from '@/utils/req';
+import { useActionBtn } from '@/utils/ActionPageHooks';
+import { submit, upload, read } from '@/utils/req';
 import { router } from 'umi';
-import { InboxOutlined, LoadingOutlined } from '@ant-design/icons';
+import { PlusOutlined } from '@ant-design/icons';
 import styles from './edit.less';
 import { getEnum } from '@/utils/enum';
+import moment from 'moment';
+import { getActionConfig } from '@/utils/utils';
 
-const { Dragger } = Upload;
+import RoomInfo from './components/room';
+import FoodInfo from './components/food';
+import GameInfo from './components/game';
+import { Ipic, Iroom, IFood,IGame, ILayout } from './components/interface';
+import LayoutInfo from './components/shipLayout';
+
 const { YearPicker } = DatePicker;
 
 const imgUploadCheck = (file: File) => {
@@ -35,40 +42,114 @@ const renderOptions = (options: object) => {
     )
 }
 
-const Page: React.FC<IActionPageProps> = ({ route, location }) => {
+const controls: ControlType[] = ['bold', 'italic', 'underline', 'text-color', 'separator', 'link', 'separator'];
 
-    const initData: {
-        'info': {
-            [key: string]: string
-        },
-        'name': string,
-        'banner': string,
-        'editor': EditorState,
-        'des': string,
-        'des_html': string,
-        'xml'?: string,
-    } = {
-        'info': {},
-        'name': '',
-        'banner': '',
-        'editor': BraftEditor.createEditorState(''),
-        'des': '',
-        'des_html': '',
-        'xml': ''
-    };
-    const { viewConfig } = route;
+const uploadArea = () => {
+    return (
+        <>
+            <PlusOutlined />
+            <div className="ant-upload-text">上传</div>
+        </>
+    )
+}
+
+interface Iinfo{
+    name:string,
+    level:string,
+    room_number:number,
+    build_time:string,
+    place_of_build:string,
+    master:string,
+    date_of_use:string,
+    length:number,
+    width:number,
+    speed:number,
+    pic_arr:Array<Ipic>,
+    editor: EditorState,
+    des: string,
+    des_html: string,
+}
+
+const Page: React.FC<IActionPageProps> = ({ route, location }) => {
+    const { authority } = route;
     const { state: ref } = location;
 
-    const { data, setData, load, onCancel, cfg } = useActionPage<typeof initData>(viewConfig, initData, ref);
+    const [ baseInfo ,setBaseInfo ] = useState<Iinfo>({
+        name:'',
+        level:'',
+        room_number:1,
+        build_time:moment().format('YYYY'),
+        place_of_build:'',
+        master:'',
+        date_of_use:moment().format('YYYY'),
+        length:0,
+        width:0,
+        speed:0,
+        pic_arr:[],
+        editor: BraftEditor.createEditorState(''),
+        des: '',
+        des_html: '',
+    });
 
-    const [uploading, setUploading] = useState(false);
+    const [roomInfo,setRoomInfo] = useState<Iroom[]>([]);
+    const [foodInfo,setFoodInfo] = useState<IFood[]>([]);
+    const [gameInfo,setGameInfo] = useState<IGame[]>([]);
+    const [shipInfo,setShipInfo] = useState<ILayout[]>([]);
+    const cfg = getActionConfig(authority); 
+
     const onOk = () => {
         if (cfg.submit) {
             const post_data = {
-                name: data.name,
-                banner: data.banner,
-                des: data.des,
-                des_html: data.des_html
+                baseInfo:{
+                    name:baseInfo.name,
+                    level:baseInfo.level,
+                    room_number:baseInfo.room_number,
+                    build_time:baseInfo.build_time,
+                    place_of_build:baseInfo.place_of_build,
+                    master:baseInfo.master,
+                    date_of_use:baseInfo.date_of_use,
+                    length:baseInfo.length,
+                    width:baseInfo.width,
+                    speed:baseInfo.speed,
+                },
+                des:{
+                    des: baseInfo.des,
+                    des_html: baseInfo.des_html
+                },
+                pic_arr:baseInfo.pic_arr.map(item => item.url),
+                roomInfo:roomInfo.map(room =>{
+                    return {
+                        des:room.des,
+                        floor:room.floor,
+                        num_of_people:room.num_of_people,
+                        room_kind:room.room_kind,
+                        room_area:room.room_area,
+                        room_type:room.room_type,
+                        pic_arr:room.pic_arr.map(item=>item.url)
+                    }
+                }),
+                foodInfo:foodInfo.map(food=>{
+                    return {
+                        des:food.des,
+                        restaurant:food.restaurant,
+                        pic_arr:food.pic_arr.map(item=>item.url)
+                    }
+                }),
+                gameInfo:gameInfo.map(game =>{
+                    return {
+                        des:game.des,
+                        name:game.name,
+                        pic_arr:game.pic_arr.map(item=>item.url)
+                    }
+                }),
+                shipInfo:shipInfo.map(layout=>{
+                    return {
+                        floor:layout.floor,
+                        pic_arr:[
+                            layout.pic.url
+                        ]
+                    }
+                })
             }
             if (ref && ref['id']) {
                 post_data['id'] = ref['id']
@@ -81,41 +162,170 @@ const Page: React.FC<IActionPageProps> = ({ route, location }) => {
         }
     }
 
-    const actionMap = {
-        提交: onOk,
-        关闭: onCancel,
+    const onCancel = () =>{
+        router.goBack();
     }
 
-    const changeInfo = (value: any, field: string) => {
-        setData({ ...data, info: { ...data.info, field: value } });
+    useEffect(() => {
+        if(cfg.read){
+            read(cfg.read.url,{action:authority},{...ref},cfg.read.data).then(r => {
+                if(r.data){
+                    let loadBase = r.data['baseInfo'];
+                    let State = BraftEditor.createEditorState(r.data['des'] || '');
+                    let pic_arr = [];
+                    if(r.data['pic_arr']){
+                        pic_arr = r.data['pic_arr'].map((url:string)=>{
+                            return {
+                                uid: url,
+                                name: url,
+                                status: 'done',
+                                url: url,
+                            }
+                        })
+                    }
+                    setBaseInfo({...loadBase,pic_arr,editor: State,des: r.data['des'], des_html: r.data['des_html']});
+                    if(r.data['roomInfo']){
+                        let loadRoom =  r.data['roomInfo'].map((room:any)=>{
+                            if(room['pic_arr'] && room['pic_arr'].length > 0){
+                                return {
+                                    ...room,
+                                    pic_arr:room['pic_arr'].map((url:string)=>{
+                                        return {
+                                            uid: url,
+                                            name: url,
+                                            status: 'done',
+                                            url: url,
+                                        }
+                                    })
+                                }
+                            }
+                            return {
+                                ...room,
+                                pic_arr:[]
+                            }
+                        })
+                        setRoomInfo([...loadRoom])
+                    }
+                    if(r.data['foodInfo']){
+                        let loadFood =  r.data['foodInfo'].map((food:any)=>{
+                            if(food['pic_arr'] && food['pic_arr'].length >0){
+                                return {
+                                    ...food,
+                                    pic_arr:food['pic_arr'].map((url:string)=>{
+                                        return {
+                                            uid: url,
+                                            name: url,
+                                            status: 'done',
+                                            url: url,
+                                        }
+                                    })
+                                }
+                            }
+                            return {
+                                ...food,
+                                pic_arr:[]
+                            }
+                        })
+                        setFoodInfo([...loadFood])
+                    }
+                    if(r.data['gameInfo']){
+                        let loadGame =  r.data['gameInfo'].map((game:any)=>{
+                            if(game['pic_arr'] && game['pic_arr'].length > 0){
+                                return {
+                                    ...game,
+                                    pic_arr:game['pic_arr'].map((url:string)=>{
+                                        return {
+                                            uid: url,
+                                            name: url,
+                                            status: 'done',
+                                            url: url,
+                                        }
+                                    })
+                                }
+                            }
+                            return {
+                                ...game,
+                                pic_arr:[]
+                            }
+                        })
+                        setGameInfo([...loadGame])
+                    }
+                    if(r.data['layoutInfo']){
+                        let loadLayout =  r.data['layoutInfo'].map((layout:any)=>{
+                            if(layout['pic_arr'] && layout['pic_arr'].length >0){
+                                let pic = {
+                                    uid: layout['pic_arr'][0],
+                                    name: layout['pic_arr'][0],
+                                    status: 'done',
+                                    url: layout['pic_arr'][0]
+                                }
+                                return {
+                                    floor:layout.floor,
+                                    pic
+                                }
+                            }
+                            return {
+                                floor:layout.floor,
+                                pic:{
+
+                                }
+                            }
+                        })
+                        setShipInfo([...loadLayout])
+                    }
+                }
+            },(e:any)=>{
+                
+            })
+        }
+    }, [])
+
+    const actionMap = {
+        提交: onOk,
+        关闭: onCancel
+    }
+    const { btns } = useActionBtn(authority, actionMap);
+
+    // base info
+    const changeBaseInfo = (value: any, field: string) => {
+        baseInfo[field] = value;
+        setBaseInfo({...baseInfo});
     };
-
-    const { btns } = useActionBtn(viewConfig, actionMap);
-
 
     const handleChange = (info: any) => {
         if (info.file.status === 'uploading') {
-            setUploading(true);
             return;
         }
         if (info.file.status === 'done') {
-            setUploading(false);
-            setData({ ...data, banner: info.file.banner });
+            baseInfo.pic_arr.push(
+                {
+                    uid: info.file.pic,
+                    name: info.file.name,
+                    status: 'done',
+                    url: info.file.pic
+                }
+            )
+            setBaseInfo({...baseInfo});
         } else if (info.file.status === 'error') {
             message.error(`${info.file.name} 文件上传失败.`);
-        } else if (info.file.status === 'removed') {
-            setUploading(false);
         }
     };
 
+    const onRemove = (file: { uid: string }) => {
+        const index = baseInfo.pic_arr.findIndex((value) => value.uid === file.uid);
+        if (index !== -1) {
+            baseInfo.pic_arr.splice(index, 1);
+            setBaseInfo({...baseInfo});
+        }
+    }
+
     const handleUpload = (prop: { file: File }) => {
-        setUploading(true);
         const formData = new FormData();
         const { file } = prop;
         formData.append('file', file);
-        upload(formData, 'cruiseCompanyBanner').then(res => {
+        upload(formData, 'cruisePic').then(res => {
             if (res.success && res.save_path) {
-                const fileinfo = { file: { status: 'done', banner: res.save_path } }
+                const fileinfo = { file: { status: 'done', name: file.name, pic: res.save_path } }
                 handleChange(fileinfo);
             } else {
                 handleChange({ file: { status: 'error', name: file.name } });
@@ -125,70 +335,18 @@ const Page: React.FC<IActionPageProps> = ({ route, location }) => {
         })
     };
 
-    const uploadArea = () => {
-        if (uploading) {
-            return <LoadingOutlined />
-        }
-        if (data.banner !== '') {
-            return (
-                <img src={data.banner} alt="图片" style={{ width: '100%', height: '100%' }} />
-            )
-        }
-        return (
-            <>
-                <p className="ant-upload-drag-icon">
-                    <InboxOutlined />
-                </p>
-                <p className="ant-upload-text">点击或者拖拽到本区域进行上传</p>
-            </>
-        )
-    }
+    //room 
+    const handleEditorChange = (HeditorState: EditorState) => {
+        setBaseInfo({ ...baseInfo, editor: HeditorState, des_html: HeditorState.toHTML(), des: HeditorState.toRAW() });
+    };
 
-    const renderDes =() =>{
+    const renderDes = () => {
         return (
             <div className="editor-wrapper" style={{ backgroundColor: 'white' }}>
                 <BraftEditor
-                    value={data.editor}
-                />
-            </div>
-        )
-    }
-
-    const renderRoom =() =>{
-        return (
-            <div className="editor-wrapper" style={{ backgroundColor: 'white' }}>
-                <BraftEditor
-                    value={data.editor}
-                />
-            </div>
-        )
-    }
-
-    const renderFood =() =>{
-        return (
-            <div className="editor-wrapper" style={{ backgroundColor: 'white' }}>
-                <BraftEditor
-                    value={data.editor}
-                />
-            </div>
-        )
-    }
-
-    const renderGame =() =>{
-        return (
-            <div className="editor-wrapper" style={{ backgroundColor: 'white' }}>
-                <BraftEditor
-                    value={data.editor}
-                />
-            </div>
-        )
-    }
-
-    const renderLayout =() =>{
-        return (
-            <div className="editor-wrapper" style={{ backgroundColor: 'white' }}>
-                <BraftEditor
-                    value={data.editor}
+                    value={baseInfo.editor}
+                    onChange={handleEditorChange}
+                    controls={controls}
                 />
             </div>
         )
@@ -214,7 +372,7 @@ const Page: React.FC<IActionPageProps> = ({ route, location }) => {
                             船只名称
                         </Col>
                         <Col span={20} className={styles.cellInput}>
-                            <Input onChange={(e) => { changeInfo(e.target.value, 'name') }} />
+                            <Input value={baseInfo.name} onChange={(e) => { changeBaseInfo(e.target.value, 'name') }} />
                         </Col>
                     </Row>
                     <Row className={styles.row}>
@@ -226,7 +384,8 @@ const Page: React.FC<IActionPageProps> = ({ route, location }) => {
                                 style={{ width: '100%' }}
                                 showSearch
                                 optionFilterProp='children'
-                                onChange={(v) => (changeInfo(v, 'level'))}
+                                onChange={(v) => (changeBaseInfo(v, 'level'))}
+                                value={baseInfo.level}
                             >
                                 {
                                     renderOptions(getEnum('StarLevel'))
@@ -239,7 +398,8 @@ const Page: React.FC<IActionPageProps> = ({ route, location }) => {
                         <Col span={8} className={styles.cellInput}>
                             <InputNumber style={{ width: '100%' }}
                                 min={1}
-                                onChange={(v) => changeInfo(v, 'room_number')}
+                                onChange={(v) => changeBaseInfo(v, 'room_number')}
+                                value={baseInfo.room_number}
                             />
                         </Col>
                     </Row>
@@ -251,7 +411,8 @@ const Page: React.FC<IActionPageProps> = ({ route, location }) => {
                             <YearPicker
                                 style={{ width: '100%' }}
                                 getPopupContainer={(triggerNode: Element) => triggerNode as HTMLElement}
-                                onChange={(v) => changeInfo(v?.format('YYYY'), 'build_time')}
+                                onChange={(v) => changeBaseInfo(v?.format('YYYY'), 'build_time')}
+                                value={moment(baseInfo.build_time)}
                             />
                         </Col>
                         <Col span={3} className={styles.cellLabel} style={{ marginLeft: '10px' }}>
@@ -262,7 +423,8 @@ const Page: React.FC<IActionPageProps> = ({ route, location }) => {
                                 style={{ width: '100%' }}
                                 showSearch
                                 optionFilterProp='children'
-                                onChange={(v) => changeInfo(v, 'place_of_build')}
+                                onChange={(v) => changeBaseInfo(v, 'place_of_build')}
+                                value={baseInfo.place_of_build}
                             >
                                 {
                                     renderOptions(getEnum('Country'))
@@ -279,7 +441,8 @@ const Page: React.FC<IActionPageProps> = ({ route, location }) => {
                                 style={{ width: '100%' }}
                                 showSearch
                                 optionFilterProp='children'
-                                onChange={(v) => changeInfo(v, 'master')}
+                                onChange={(v) => changeBaseInfo(v, 'master')}
+                                value={baseInfo.master}
                             >
                                 {
                                     renderOptions(getEnum('Country'))
@@ -293,7 +456,8 @@ const Page: React.FC<IActionPageProps> = ({ route, location }) => {
                             <YearPicker
                                 style={{ width: '100%' }}
                                 getPopupContainer={(triggerNode: Element) => triggerNode as HTMLElement}
-                                onChange={(v) => changeInfo(v?.format('YYYY'), 'date_of_use')}
+                                onChange={(v) => changeBaseInfo(v?.format('YYYY'), 'date_of_use')}
+                                value={moment(baseInfo.date_of_use)}
                             />
                         </Col>
                     </Row>
@@ -302,13 +466,17 @@ const Page: React.FC<IActionPageProps> = ({ route, location }) => {
                             全长(米)
                         </Col>
                         <Col span={8} className={styles.cellInput}>
-                            <InputNumber style={{ width: '100%' }} min={1} onChange={(v) => changeInfo(v, 'length')} />
+                            <InputNumber style={{ width: '100%' }} min={1} 
+                            value={baseInfo.length}
+                            onChange={(v) => changeBaseInfo(v, 'length')} />
                         </Col>
                         <Col span={3} className={styles.cellLabel} style={{ marginLeft: '10px' }}>
                             全宽(米)
                         </Col>
                         <Col span={8} className={styles.cellInput}>
-                            <InputNumber style={{ width: '100%' }} min={1} onChange={(v) => changeInfo(v, 'width')} />
+                            <InputNumber style={{ width: '100%' }} min={1} 
+                            value={baseInfo.width}
+                            onChange={(v) => changeBaseInfo(v, 'width')} />
                         </Col>
                     </Row>
                     <Row className={styles.row}>
@@ -316,22 +484,27 @@ const Page: React.FC<IActionPageProps> = ({ route, location }) => {
                             平均航速
                         </Col>
                         <Col span={8} className={styles.cellInput}>
-                            <InputNumber style={{ width: '100%' }} min={1} onChange={(v) => changeInfo(v, 'speed')} />
+                            <InputNumber style={{ width: '100%' }} min={1} 
+                            value={baseInfo.speed}
+                            onChange={(v) => changeBaseInfo(v, 'speed')} />
                         </Col>
                     </Row>
                 </Col>
                 <Col span={12} style={{ marginTop: '12px' }}>
-                    <Dragger
-                        name="photo"
-                        multiple={false}
-                        showUploadList={false}
-                        className='upload-dragger'
-                        beforeUpload={imgUploadCheck}
-                        onChange={info => handleChange(info)}
-                        customRequest={({ file }) => handleUpload({ file })}
-                    >
-                        {uploadArea()}
-                    </Dragger>
+                    {
+                        <Upload
+                            name="pictureList"
+                            listType="picture-card"
+                            // @ts-ignore
+                            fileList={baseInfo.pic_arr}
+                            beforeUpload={imgUploadCheck}
+                            onChange={info => handleChange(info)}
+                            customRequest={({ file }) => handleUpload({ file })}
+                            onRemove={(file) => onRemove(file)}
+                        >
+                            {uploadArea()}
+                        </Upload>
+                    }
                 </Col>
             </Row>
             <Tabs defaultActiveKey="邮轮概况" size='large'
@@ -343,16 +516,16 @@ const Page: React.FC<IActionPageProps> = ({ route, location }) => {
                     {renderDes()}
                 </Tabs.TabPane>
                 <Tabs.TabPane tab="客房介绍" key="客房介绍">
-                    {renderRoom()}
+                    <RoomInfo info={roomInfo} update={setRoomInfo}/>
                 </Tabs.TabPane>
                 <Tabs.TabPane tab="餐饮介绍" key="餐饮介绍">
-                    {renderFood()}
+                    <FoodInfo info={foodInfo} update={setFoodInfo}/>
                 </Tabs.TabPane>
                 <Tabs.TabPane tab="娱乐介绍" key="娱乐介绍">
-                    {renderGame()}
+                    <GameInfo info={gameInfo} update={setGameInfo}/>
                 </Tabs.TabPane>
                 <Tabs.TabPane tab="船舱布局" key="船舱布局">
-                    {renderLayout()}
+                    <LayoutInfo info={shipInfo} update={setShipInfo}/>
                 </Tabs.TabPane>
             </Tabs>
 

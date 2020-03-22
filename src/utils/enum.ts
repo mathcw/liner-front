@@ -2,7 +2,8 @@ import { sys } from "@/utils/core";
 
 export const dict = {
   Business: {
-    1:'价格类型'
+    1:'价格类型',
+    2:'客房类型'
   },
   YesNo: { 0: '不允许', 1: '允许' },
   State: { 0: '停用', 1: '启用' },
@@ -50,6 +51,12 @@ export const dict = {
   BindOpinion: {
     1: '绑定',
     2: '拒回'
+  },
+  RoomType:{
+    1: '套房',
+    2: '阳台房',
+    3: '海景房',
+    4: '内舱房'
   },
   enum_ver: ""
 };

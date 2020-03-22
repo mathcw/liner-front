@@ -10,7 +10,7 @@ import SearchCard from '@/components/SearchCard';
 import renderHeaderBtns from '@/components/ListBtns/headerBtns';
 import renderRowBtns from '@/components/ListBtns/rowBtns';
 
-import { getModConfig, colDisplay } from '@/utils/utils';
+import { getModConfig, colDisplay, dock_height } from '@/utils/utils';
 import { useListPage, useListPageBtn, useListPageSearch } from '@/utils/ListPageHooks';
 import { submit } from '@/utils/req';
 import ModalForm from '@/components/ModalForm';
@@ -146,6 +146,7 @@ const list: React.FC<IModPageProps> = ({ route }) => {
         extra={renderHeaderBtns(headerBtns)}
       >
         <List
+          style={{height:dock_height(),overflow:'auto'}}
           size="large"
           rowKey="id"
           dataSource={data}
