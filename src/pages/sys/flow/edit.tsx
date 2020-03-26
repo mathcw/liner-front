@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { Col, Divider, Button, Modal } from 'antd';
+import React, { useEffect } from 'react';
+import { Col, Button, Modal } from 'antd';
 import { v4 as uuid } from 'uuid';
 import { IActionPageProps } from '@/viewconfig/ActionConfig';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper/actionPageHeader';
@@ -24,7 +24,7 @@ interface IDataType {
 }
 
 const Page: React.FC<IActionPageProps> = ({ route, location }) => {
-  const { viewConfig } = route;
+  const { authority,viewConfig } = route;
   const { state: ref } = location;
 
   const initData: {
@@ -34,7 +34,7 @@ const Page: React.FC<IActionPageProps> = ({ route, location }) => {
     流程编辑: []
   }
 
-  const { data, setData, load, onOk, onCancel, cfg } = useActionPage<typeof initData>(viewConfig, initData, ref);
+  const { data, setData, load, onOk, onCancel, cfg } = useActionPage<typeof initData>(authority,viewConfig, initData, ref);
   const actionMap = {
     提交: onOk,
     关闭: onCancel,

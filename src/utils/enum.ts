@@ -58,6 +58,15 @@ export const dict = {
     3: '海景房',
     4: '内舱房'
   },
+  ShipKind:{
+    1:'河轮',
+    2:'豪华邮轮'
+  },
+  PdKind:{
+    1:'单船票',
+    2:'邮轮套餐(团队游)',
+    3:'河轮套餐(团队游)'
+  },
   enum_ver: ""
 };
 
@@ -161,7 +170,7 @@ export function getEnum(
               cascadeSet = dict['CityCountry'];
               break;
             case 'CruiseShip':
-              cascadeSet = dict['CruiseCompanyOfShip'];
+              cascadeSet = dict['ShipCompany'];
               break;
             default:
               break;

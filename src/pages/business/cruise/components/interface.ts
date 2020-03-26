@@ -91,3 +91,8 @@ export interface IroomBlockProps {
     onRoomRemove: (file: { uid: string }, roomIndex: number) => void,
     handleRoomUpload: (prop: { file: File }, index: number) => void
 }
+
+export interface IVideoInfoProps{
+    video:string;
+    update: React.Dispatch<React.SetStateAction<string>>
+}

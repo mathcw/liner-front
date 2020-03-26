@@ -39,10 +39,10 @@ const Page: React.FC<IActionPageProps> = ({ route, location }) => {
         'des_html': '',
         'xml': ''
     };
-    const { viewConfig } = route;
+    const { authority,viewConfig } = route;
     const { state: ref } = location;
 
-    const { data, setData, load, onCancel, cfg } = useActionPage<typeof initData>(viewConfig, initData, ref);
+    const { data, setData, load, onCancel, cfg } = useActionPage<typeof initData>(authority,viewConfig, initData, ref);
 
     const [uploading, setUploading] = useState(false);
     const onOk = () => {

@@ -112,7 +112,7 @@ const mergeMenu = (remoteMenu: object) => {
 }
 
 const Page: React.FC<IActionPageProps> = ({ route, location }) => {
-  const { viewConfig } = route;
+  const { authority,viewConfig } = route;
   const { state } = location;
 
   const initData: {
@@ -122,7 +122,7 @@ const Page: React.FC<IActionPageProps> = ({ route, location }) => {
     auth: IAuthData
   } = { menu: {}, auth: { name: '', scope: '', actions: [], filters: {} } }
 
-  const { data, setData, load, onOk, onCancel, cfg } = useActionPage<typeof initData>(viewConfig, initData, state);
+  const { data, setData, load, onOk, onCancel, cfg } = useActionPage<typeof initData>(authority,viewConfig, initData, state);
 
   const [filterModalShow, setModalShow] = useState(false);
   const [selectModalCfg, setModalCfg] = useState({ mod: '', field: '', auth_filter: {}, type: '' });

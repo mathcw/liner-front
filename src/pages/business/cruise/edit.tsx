@@ -20,6 +20,7 @@ import FoodInfo from './components/food';
 import GameInfo from './components/game';
 import { Ipic, Iroom, IFood,IGame, ILayout } from './components/interface';
 import LayoutInfo from './components/shipLayout';
+import VideoInfo from './components/video';
 
 const { YearPicker } = DatePicker;
 
@@ -55,6 +56,7 @@ const uploadArea = () => {
 
 interface Iinfo{
     name:string,
+    cruise_company_id:string,
     level:string,
     room_number:number,
     build_time:string,
@@ -68,14 +70,16 @@ interface Iinfo{
     editor: EditorState,
     des: string,
     des_html: string,
+    kind:string,
 }
 
 const Page: React.FC<IActionPageProps> = ({ route, location }) => {
-    const { authority } = route;
+    const { authority,viewConfig } = route;
     const { state: ref } = location;
 
     const [ baseInfo ,setBaseInfo ] = useState<Iinfo>({
         name:'',
+        cruise_company_id:'',
         level:'',
         room_number:1,
         build_time:moment().format('YYYY'),
@@ -89,19 +93,22 @@ const Page: React.FC<IActionPageProps> = ({ route, location }) => {
         editor: BraftEditor.createEditorState(''),
         des: '',
         des_html: '',
+        kind:'',
     });
 
     const [roomInfo,setRoomInfo] = useState<Iroom[]>([]);
     const [foodInfo,setFoodInfo] = useState<IFood[]>([]);
     const [gameInfo,setGameInfo] = useState<IGame[]>([]);
     const [shipInfo,setShipInfo] = useState<ILayout[]>([]);
-    const cfg = getActionConfig(authority); 
+    const [video,setVideo] = useState<string>('');
+    const cfg = getActionConfig(viewConfig); 
 
     const onOk = () => {
         if (cfg.submit) {
             const post_data = {
                 baseInfo:{
                     name:baseInfo.name,
+                    cruise_company_id:baseInfo.cruise_company_id,
                     level:baseInfo.level,
                     room_number:baseInfo.room_number,
                     build_time:baseInfo.build_time,
@@ -111,6 +118,8 @@ const Page: React.FC<IActionPageProps> = ({ route, location }) => {
                     length:baseInfo.length,
                     width:baseInfo.width,
                     speed:baseInfo.speed,
+                    kind:baseInfo.kind,
+                    video
                 },
                 des:{
                     des: baseInfo.des,
@@ -184,6 +193,10 @@ const Page: React.FC<IActionPageProps> = ({ route, location }) => {
                         })
                     }
                     setBaseInfo({...loadBase,pic_arr,editor: State,des: r.data['des'], des_html: r.data['des_html']});
+
+                    if(r.data['video']){
+                        setVideo(r.data['video']);
+                    }
                     if(r.data['roomInfo']){
                         let loadRoom =  r.data['roomInfo'].map((room:any)=>{
                             if(room['pic_arr'] && room['pic_arr'].length > 0){
@@ -284,7 +297,7 @@ const Page: React.FC<IActionPageProps> = ({ route, location }) => {
         提交: onOk,
         关闭: onCancel
     }
-    const { btns } = useActionBtn(authority, actionMap);
+    const { btns } = useActionBtn(viewConfig, actionMap);
 
     // base info
     const changeBaseInfo = (value: any, field: string) => {
@@ -373,6 +386,40 @@ const Page: React.FC<IActionPageProps> = ({ route, location }) => {
                         </Col>
                         <Col span={20} className={styles.cellInput}>
                             <Input value={baseInfo.name} onChange={(e) => { changeBaseInfo(e.target.value, 'name') }} />
+                        </Col>
+                    </Row>
+                    <Row className={styles.row}>
+                        <Col span={3} className={styles.cellLabel}>
+                            邮轮类型
+                        </Col>
+                        <Col span={8} className={styles.cellSelect}>
+                            <Select
+                                style={{ width: '100%' }}
+                                showSearch
+                                optionFilterProp='children'
+                                onChange={(v) => changeBaseInfo(v, 'kind')}
+                                value={baseInfo.kind}
+                            >
+                                {
+                                    renderOptions(getEnum('ShipKind'))
+                                }
+                            </Select>
+                        </Col>
+                        <Col span={3} className={styles.cellLabel} style={{ marginLeft: '10px' }}>
+                            所属公司
+                        </Col>
+                        <Col span={8} className={styles.cellSelect}>
+                            <Select
+                                style={{ width: '100%' }}
+                                showSearch
+                                optionFilterProp='children'
+                                onChange={(v) => changeBaseInfo(v, 'cruise_company_id')}
+                                value={baseInfo.cruise_company_id}
+                            >
+                                {
+                                    renderOptions(getEnum('CruiseCompany'))
+                                }
+                            </Select>
                         </Col>
                     </Row>
                     <Row className={styles.row}>
@@ -514,6 +561,9 @@ const Page: React.FC<IActionPageProps> = ({ route, location }) => {
             >
                 <Tabs.TabPane tab="邮轮概况" key="邮轮概况">
                     {renderDes()}
+                </Tabs.TabPane>
+                <Tabs.TabPane tab="邮轮视频" key="邮轮视频">
+                    <VideoInfo video={video} update={setVideo}/>
                 </Tabs.TabPane>
                 <Tabs.TabPane tab="客房介绍" key="客房介绍">
                     <RoomInfo info={roomInfo} update={setRoomInfo}/>

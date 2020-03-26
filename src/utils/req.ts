@@ -67,7 +67,7 @@ export async function req(url:string, data?:object) {
 
 export async function upload(formData:FormData, type:string) {
 
-    let url  = sys.HOST+`/PublicApi/upload/${type}`;
+    let url  = sys.HOST+`/UploadApi/upload/${type}`;
 
     const headers = {
         Authorization: sys.sid,

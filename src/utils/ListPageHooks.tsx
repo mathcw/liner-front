@@ -4,9 +4,9 @@ import { getModConfig, btnClickEvent, getModHeaderButton,getModRowButton, getMod
 import { read } from './req';
 import { IModBtn } from '@/viewconfig/ModConfig';
 
-export function useListPage(authority:string) {
+export function useListPage(authority:string,viewConfig:string) {
 
-    const cfg = getModConfig(authority);
+    const cfg = getModConfig(viewConfig);
     const [query, setQuery] = useState<object>({});
     const [data, setData] = useState<object[]>([]);
 
@@ -34,14 +34,14 @@ export function useListPage(authority:string) {
             ,total, setTotal,pageSizeOptions,load};
 }
 
-export function useListPageBtn(authority:string,actionMap?:object){
-    const headerBtns :IModBtn[] = btnClickEvent(getModHeaderButton(authority),actionMap);
-    const rowBtns:IModBtn[] = btnClickEvent(getModRowButton(authority),actionMap);
+export function useListPageBtn(viewConfig:string,actionMap?:object){
+    const headerBtns :IModBtn[] = btnClickEvent(getModHeaderButton(viewConfig),actionMap);
+    const rowBtns:IModBtn[] = btnClickEvent(getModRowButton(viewConfig),actionMap);
     return {headerBtns,rowBtns}; 
 }
 
-export function useListPageSearch(authority:string){
-    const dropDownSearch = getModDropDownSearch(authority);
-    const textSearch = getModTextSearch(authority);
+export function useListPageSearch(viewConfig:string){
+    const dropDownSearch = getModDropDownSearch(viewConfig);
+    const textSearch = getModTextSearch(viewConfig);
     return {dropDownSearch,textSearch};
 }

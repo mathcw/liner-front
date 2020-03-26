@@ -151,6 +151,7 @@ const Cell: React.FC<ICell> = ({
         case 'date':
           return (
             <DatePicker
+              style={{ width: "100%" }}
               open={initOpenPickerStatus}
               format="YYYY-MM-DD"
               onChange={(date: moment.Moment | null, v: string) => onChange(v)}
@@ -161,6 +162,7 @@ const Cell: React.FC<ICell> = ({
         case 'time':
           return (
             <TimePicker
+              style={{ width: "100%" }}
               open={initOpenPickerStatus}
               format="HH:mm:ss"
               onChange={(time: moment.Moment|null, v: string) => onChange(v)}

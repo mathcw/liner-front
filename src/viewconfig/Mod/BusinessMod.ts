@@ -31,6 +31,7 @@ const config: ModConfigItem = {
             company_name: { text: '邮轮公司' },
         },
         dropDownSearch: {
+            cruise_company_id: { text: '邮轮公司',type:'CruiseCompany' },
         },
         headerButtons: {
             新增邮轮: { text: "新增" }

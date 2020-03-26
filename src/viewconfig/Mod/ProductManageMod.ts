@@ -1,39 +1,47 @@
 import { ModConfigItem } from '@/viewconfig/ModConfig';
 
 const config: ModConfigItem = {
-    '产品审核': {
-        read: { url: "/ProductStore/Product/read" },
-        title: "产品审核",
+    '产品管理': {
+        read: { url: "/productStore/Product/read" },
+        title: "产品管理",
         textSearch: {
-            pd_name: { text: '产品名称' },
-            id: { text: '产品编号' }
+            name :{text:'产品名称'},
+            pd_num: { text: '船次编号' }
         },
         dropDownSearch: {
+            cruise_company_id: { text: '邮轮公司',type:'CruiseCompany' },
+            ship_id:{text:'邮轮',type:'CruiseShip'}
         },
         headerButtons: {
+            新增产品: { text :'新增'},
         },
         rowButtons: {
-            审核产品: { text: '审核', show: { flow: [2] } },
+            修改产品:{ text: '修改'},
+            新增团期:{ text: '开团'}
         },
         pageSizeOptions: ["10", "20", "30", "50", "100"],
         pageSize: 100,
     },
-    '产品维护': {
-        read: { url: "/ProductStore/Product/read" },
-        title: "产品维护",
+
+    '班期管理': {
+        read: { url: "/productStore/Group/read" },
+        title: "班期管理",
         textSearch: {
-            pd_name: { text: '产品名称' },
-            id: { text: '产品编号' }
+            name :{text:'产品名称'},
+            pd_num: { text: '船次编号' },
+            min_price:{text:'最低价'},
         },
         dropDownSearch: {
-        },
-        headerButtons: {
+            cruise_company_id: { text: '邮轮公司',type:'CruiseCompany' },
+            ship_id:{text:'邮轮',type:'CruiseShip'},
+            dep_date:{text:'出发日期',type:'date'},
         },
         rowButtons: {
-            维护产品: { text: '维护', show: { flow: [4] } },
+            修改班期:{ text: '修改'},
+            删除班期:{ text: '删除'}
         },
         pageSizeOptions: ["10", "20", "30", "50", "100"],
-        pageSize: 100
+        pageSize: 100,
     },
 }
 

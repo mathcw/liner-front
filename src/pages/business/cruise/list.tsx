@@ -14,7 +14,6 @@ import { getModConfig, colDisplay, dock_height } from '@/utils/utils';
 import { useListPage, useListPageBtn, useListPageSearch } from '@/utils/ListPageHooks';
 import { submit } from '@/utils/req';
 import ModalForm from '@/components/ModalForm';
-const IconPng = require('@/assets/role.png');
 
 
 // 新增
@@ -87,7 +86,7 @@ const toggle = (reload: () => void) => (ref: any) => {
 }
 
 const list: React.FC<IModPageProps> = ({ route }) => {
-  const { viewConfig } = route;
+  const { viewConfig,authority } = route;
   const {
     setCurrent,
     setPageSize,
@@ -99,7 +98,7 @@ const list: React.FC<IModPageProps> = ({ route }) => {
     query,
     setQuery,
     data
-  } = useListPage(viewConfig)
+  } = useListPage(authority,viewConfig)
 
   const actionMap = {
     新增城市: add(load),
@@ -159,12 +158,18 @@ const list: React.FC<IModPageProps> = ({ route }) => {
               ]}
             >
               <List.Item.Meta
-                avatar={<Avatar src={IconPng} shape="square" size="large" />}
+                avatar={<Avatar src={item['list_pic']} shape="square" size="large" />}
                 title={item['name']}
                 description={
-                  `所在国家:${colDisplay(item['country'], 'Country', item)}`
+                  `所属公司:${colDisplay(item['cruise_company_id'], 'CruiseCompany', item)}`
                 }
               />
+              <div style={{ display: 'flex', flexDirection: 'column', marginRight: '20px' }}>
+                <span>星级</span>
+                <div className={styles.text}>
+                  {colDisplay(item['level'], 'StarLevel', item)}`
+                </div>
+              </div>
               <div style={{ display: 'flex', flexDirection: 'column', marginRight: '20px' }}>
                 <span>最近变动</span>
                 <div className={styles.text}>

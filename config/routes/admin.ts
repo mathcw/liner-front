@@ -106,6 +106,75 @@ const routes: Array<IRouteValue> = [
         ]
       },
       {
+        name: "产品班期",
+        path: "/productStore",
+        routes: [
+          {
+            path: "/productStore/list",
+            name: "产品管理",
+            authority: "产品管理",
+            viewConfig: "产品管理",
+            component: "./productStore/list"
+          },
+          {
+            path: "/productStore/group/list",
+            name: "班期管理",
+            authority: "班期管理",
+            viewConfig: "班期管理",
+            component: "./group/list"
+          },
+          {
+            path: "/productStore/ticket/add",
+            name: "新增单船票",
+            authority: "新增产品",
+            viewConfig: "新增单船票",
+            hideInMenu: true,
+            component: "./productStore/ticket/edit"
+          },
+          {
+            path: "/productStore/ticket/edit",
+            name: "修改单船票",
+            authority: "修改产品",
+            viewConfig: "修改单船票",
+            hideInMenu: true,
+            component: "./productStore/ticket/edit"
+          },
+
+          {
+            path: "/productStore/youlun/add",
+            name: "新增邮轮套餐",
+            authority: "新增产品",
+            viewConfig: "新增邮轮套餐",
+            hideInMenu: true,
+            component: "./productStore/youlun/edit"
+          },
+          {
+            path: "/productStore/youlun/edit",
+            name: "修改邮轮套餐",
+            authority: "修改产品",
+            viewConfig: "修改邮轮套餐",
+            hideInMenu: true,
+            component: "./productStore/youlun/edit"
+          },
+          {
+            path: "/productStore/helun/add",
+            name: "新增河轮套餐",
+            authority: "新增产品",
+            viewConfig: "新增河轮套餐",
+            hideInMenu: true,
+            component: "./productStore/helun/edit"
+          },
+          {
+            path: "/productStore/helun/edit",
+            name: "修改河轮套餐",
+            authority: "修改产品",
+            viewConfig: "修改河轮套餐",
+            hideInMenu: true,
+            component: "./productStore/helun/edit"
+          },
+        ]
+      },
+      {
         name: "系统设置",
         path: "/sys",
         routes: [

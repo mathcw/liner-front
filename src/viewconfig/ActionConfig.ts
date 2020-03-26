@@ -1,10 +1,13 @@
 import OrgAction from "@/viewconfig/Action/OrgAction";
 import SysAction from "@/viewconfig/Action/SysAction";
 import BusinessAction from "@/viewconfig/Action/BusinessAction";
+import ProductStoreAction from "@/viewconfig/Action/ProductStoreAction";
+
 import { BasicLayoutProps as ProLayoutProps } from "@ant-design/pro-layout";
 
 export interface IActionPageProps extends ProLayoutProps {
   route: ProLayoutProps["route"] & {
+    viewConfig:string;
     authority: string;
   };
   location: ProLayoutProps["location"] & {
@@ -34,4 +37,4 @@ export interface ActionConfigItem {
   };
 }
 
-export const config: ActionConfigItem = JSON.parse(JSON.stringify({ ...OrgAction,...SysAction,...BusinessAction}));
+export const config: ActionConfigItem = JSON.parse(JSON.stringify({ ...OrgAction,...SysAction,...BusinessAction,...ProductStoreAction}));

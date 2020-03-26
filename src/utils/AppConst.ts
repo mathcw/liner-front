@@ -31,4 +31,7 @@ export default {
     Dz_Zc: 1,
     Dz_Sd: 2,
 
+    PD_KIND_DAN:1,
+    PD_KIND_YOU:2,
+    PD_KIND_HE:3,
 }

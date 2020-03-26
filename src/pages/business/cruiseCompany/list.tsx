@@ -23,7 +23,7 @@ const toggle = (reload: () => void) => (ref: any) => {
 }
 
 const list: React.FC<IModPageProps> = ({ route }) => {
-  const { viewConfig } = route;
+  const { viewConfig,authority } = route;
   const {
     setCurrent,
     setPageSize,
@@ -35,7 +35,7 @@ const list: React.FC<IModPageProps> = ({ route }) => {
     query,
     setQuery,
     data
-  } = useListPage(viewConfig)
+  } = useListPage(authority,viewConfig)
 
   const actionMap = {
     启停邮轮公司: toggle(load)
