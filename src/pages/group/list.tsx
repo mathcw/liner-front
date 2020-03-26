@@ -97,6 +97,13 @@ const edit = (reload: () => void) => (ref: any) => {
     )
 }
 
+const deleteGroup = (reload: () => void) => (ref: any) => {
+    submit("/productStore/Group/destroy", { id: ref.id}).then(r => {
+      message.success(r.message);
+      reload();
+    });
+  } 
+
 const list: React.FC<IModPageProps> = ({ route }) => {
     const { viewConfig, authority } = route;
     const {
@@ -114,6 +121,7 @@ const list: React.FC<IModPageProps> = ({ route }) => {
 
     const actionMap = {
         修改班期: edit(load),
+        删除班期: deleteGroup(load)
     };
 
 
