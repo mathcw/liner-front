@@ -174,7 +174,7 @@ const list: React.FC<IModPageProps> = ({ route }) => {
                             <div style={{ display: 'flex', flexDirection: 'column', marginRight: '20px' }}>
                                 <span>出发日期</span>
                                 <div className={styles.text}>
-                                    {item['dep_dtae']}
+                                    {item['dep_date']}
                                 </div>
                             </div>
                             <div style={{ display: 'flex', flexDirection: 'column', marginRight: '20px' }}>
