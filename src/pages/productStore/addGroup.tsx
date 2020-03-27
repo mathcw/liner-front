@@ -2,7 +2,9 @@ import React, { useState } from 'react';
 import { Row, Col, Button, DatePicker, Input, InputNumber } from 'antd';
 import moment from 'moment';
 import { MinusCircleFilled, CopyFilled } from '@ant-design/icons';
+import locale from 'antd/es/date-picker/locale/zh_CN';
 import styles from './addGroup.less';
+
 
 interface IPrice {
     room_type: string;
@@ -59,6 +61,7 @@ class Block extends React.Component<IBlock>{
                 <Row style={{ marginBottom: '20px' }}>
                     <Col span={6}>
                         <DatePicker
+                            locale={locale}
                             placeholder='选择出发日期'
                             style={{ width: "100%" }}
                             format="YYYY-MM-DD"

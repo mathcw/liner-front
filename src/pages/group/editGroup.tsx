@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { Row, Col, Button, Input, InputNumber, DatePicker } from 'antd';
 import { MinusCircleFilled } from '@ant-design/icons';
-import styles from './editGroup.less';
 import moment from 'moment';
+import locale from 'antd/es/date-picker/locale/zh_CN';
+import styles from './editGroup.less';
+
 
 interface IPrice {
     room_type: string;
@@ -47,6 +49,7 @@ class Block extends React.Component<IBlock>{
                 <Row style={{ marginBottom: '20px' }}>
                     <Col span={6}>
                         <DatePicker
+                            locale={locale}
                             value={moment(data.dep_date)}
                             placeholder='选择出发日期'
                             style={{ width: "100%" }}
