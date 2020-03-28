@@ -14,7 +14,7 @@ const config: ActionConfigItem = {
     修改单船票: {
         title: "修改单船票",
         path:"/productStore/ticket/edit",
-        read:{ url:"/productStore/Ticket/read_modify"},
+        read:{ url:"/productStore/Ticket/read_modify", data: { id: "id" }},
         submit: { url: "/productStore/Ticket/submit" },
         btns: {
           关闭: { text: "关闭" },
@@ -35,7 +35,7 @@ const config: ActionConfigItem = {
     修改邮轮套餐: {
         title: "修改邮轮套餐",
         path:"/productStore/youlun/edit",
-        read:{ url:"/productStore/Youlun/read_modify"},
+        read:{ url:"/productStore/Youlun/read_modify", data: { id: "id" }},
         submit: { url: "/productStore/Youlun/submit" },
         btns: {
           关闭: { text: "关闭" },
@@ -56,7 +56,7 @@ const config: ActionConfigItem = {
     修改河轮套餐: {
         title: "修改河轮套餐",
         path:"/productStore/helun/edit",
-        read:{ url:"/productStore/Helun/read_modify"},
+        read:{ url:"/productStore/Helun/read_modify", data: { id: "id" }},
         submit: { url: "/productStore/Helun/submit" },
         btns: {
           关闭: { text: "关闭" },

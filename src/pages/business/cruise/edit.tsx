@@ -479,7 +479,7 @@ const Page: React.FC<IActionPageProps> = ({ route, location }) => {
                             </Select>
                         </Col>
                     </Row>
-                    <Row className={styles.row}>
+                    {/* <Row className={styles.row}>
                         <Col span={3} className={styles.cellLabel}>
                             船籍
                         </Col>
@@ -496,18 +496,7 @@ const Page: React.FC<IActionPageProps> = ({ route, location }) => {
                                 }
                             </Select>
                         </Col>
-                        <Col span={3} className={styles.cellLabel} style={{ marginLeft: '10px' }}>
-                            使用时间
-                        </Col>
-                        <Col span={8} className={styles.cellSelect}>
-                            <YearPicker
-                                style={{ width: '100%' }}
-                                getPopupContainer={(triggerNode: Element) => triggerNode as HTMLElement}
-                                onChange={(v) => changeBaseInfo(v?.format('YYYY'), 'date_of_use')}
-                                value={moment(baseInfo.date_of_use)}
-                            />
-                        </Col>
-                    </Row>
+                    </Row> */}
                     <Row className={styles.row}>
                         <Col span={3} className={styles.cellLabel}>
                             全长(米)
@@ -534,6 +523,17 @@ const Page: React.FC<IActionPageProps> = ({ route, location }) => {
                             <InputNumber style={{ width: '100%' }} min={1} 
                             value={baseInfo.speed}
                             onChange={(v) => changeBaseInfo(v, 'speed')} />
+                        </Col>
+                        <Col span={3} className={styles.cellLabel} style={{ marginLeft: '10px' }}>
+                            使用时间
+                        </Col>
+                        <Col span={8} className={styles.cellSelect}>
+                            <YearPicker
+                                style={{ width: '100%' }}
+                                getPopupContainer={(triggerNode: Element) => triggerNode as HTMLElement}
+                                onChange={(v) => changeBaseInfo(v?.format('YYYY'), 'date_of_use')}
+                                value={moment(baseInfo.date_of_use)}
+                            />
                         </Col>
                     </Row>
                 </Col>

@@ -25,6 +25,7 @@ const edit = (reload: () => void) => (ref: any) => {
                 //check
                 let warn = false;
                 let detail_check = false;
+                let duoren_check = false;
 
                 if(data['dep_date'] === '' || data['dep_date'] === null || data['dep_date'] === undefined){
                     Modal.error({
@@ -41,18 +42,29 @@ const edit = (reload: () => void) => (ref: any) => {
                     if(detail['room_type'] === '' ||detail['room_type'] === null ||detail['room_type'] === undefined  ){
                         detail_check = true;
                     }
-                    if(detail['location'] === '' ||detail['location'] === null ||detail['location'] === undefined  ){
-                        detail_check = true;
-                    }
+                    // if(detail['location'] === '' ||detail['location'] === null ||detail['location'] === undefined  ){
+                    //     detail_check = true;
+                    // }
                     if(detail['price'] === 0 ||detail['price'] === null ||detail['price'] === undefined  ){
                         detail_check = true;
                     }
+                    if(detail['duoren_price'] === 0 ||detail['duoren_price'] <0 ){
+                        duoren_check = true;
+                    }
                 })
+
+                if(duoren_check){
+                    Modal.error({
+                        title:'三/四人价格错误',
+                        content:'三/四人价格 不能小于或等于0，若无三/四人价 请清空'
+                    })
+                    return;
+                }
         
                 if(detail_check){
                     Modal.error({
                         title:'缺少必填项',
-                        content:'请完善价格：房型，位置，价格都是必填项'
+                        content:'请完善价格：房型，一/二人价格都是必填项'
                     })
                     return;
                 }

@@ -9,7 +9,8 @@ import styles from './addGroup.less';
 interface IPrice {
     room_type: string;
     location: string;
-    price: number
+    price: number,
+    duoren_price?:number
 }
 
 interface IData {
@@ -85,10 +86,10 @@ class Block extends React.Component<IBlock>{
                         <span>房型</span>
                     </Col>
                     <Col span={8}>
-                        <span>房间位置</span>
+                        <span>一/二人价</span>
                     </Col>
                     <Col span={8}>
-                        <span>价格</span>
+                        <span>三/四人价</span>
                     </Col>
                 </Row>
                 {
@@ -98,11 +99,14 @@ class Block extends React.Component<IBlock>{
                                 <Col span={8}>
                                     <Input value={item.room_type} onChange={(e) => this.eidtDetail(e.target.value, index, 'room_type')} style={{ width: '90%' }} />
                                 </Col>
-                                <Col span={8}>
+                                {/* <Col span={8}>
                                     <Input value={item.location} onChange={(e) => this.eidtDetail(e.target.value, index, 'location')} style={{ width: '90%' }} />
-                                </Col>
+                                </Col> */}
                                 <Col span={6}>
                                     <InputNumber value={item.price} onChange={(v) => this.eidtDetail(v, index, 'price')} style={{ width: '90%' }} min={1} />
+                                </Col>
+                                <Col span={6}>
+                                    <InputNumber value={item.duoren_price} onChange={(v) => this.eidtDetail(v, index, 'duoren_price')} style={{ width: '90%' }} />
                                 </Col>
                                 <Col span={2}>
                                     <MinusCircleFilled onClick={() => this.deleteDetail(index)} style={{ color: 'red' }} />
