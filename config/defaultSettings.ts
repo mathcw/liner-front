@@ -53,9 +53,9 @@ export default {
   fixSiderbar: false,
   colorWeak: false,
   menu: {
-    locale: false
+    locale: true
   },
-  title: 'liner',
+  title: '邮轮后台',
   pwa: false,
   iconfontUrl: '',
 } as DefaultSettings;
