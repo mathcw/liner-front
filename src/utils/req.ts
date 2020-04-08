@@ -11,7 +11,7 @@ export async function req(url:string, data?:object) {
         reqUrl = sys.HOST+reqUrl;
     }
 
-    const body = { ...data, sid: sys.sid };
+    const body = { ...data };
 
     const headers = {
         'Content-Type': 'application/json',

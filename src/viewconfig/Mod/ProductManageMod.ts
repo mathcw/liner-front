@@ -17,7 +17,8 @@ const config: ModConfigItem = {
         },
         rowButtons: {
             修改产品:{ text: '修改'},
-            新增团期:{ text: '开团'}
+            新增团期:{ text: '开团'},
+            设为首页推荐产品:{text:'推荐'},
         },
         pageSizeOptions: ["10", "20", "30", "50", "100"],
         pageSize: 100,

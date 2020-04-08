@@ -8,7 +8,7 @@ interface ISYSCONFIG {
 
 export const sys: ISYSCONFIG = {
     APP_NAME: 'TY_LINER',
-    HOST: '/api',
+    HOST: '/liner-back',
     user: {},
     filters: {},
     sid: '',

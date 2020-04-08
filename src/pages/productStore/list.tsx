@@ -44,61 +44,61 @@ const addGroup = (reload: () => void) => (ref: any) => {
         let warn_date = '';
         let detail_check = false;
         let duoren_check = false;
-        data.map( (item:any)=>{
-            if(!check && item['dep_date'] === '' || item['dep_date'] === null || item['dep_date'] === undefined){
+        data.map((item: any) => {
+            if (!check && item['dep_date'] === '' || item['dep_date'] === null || item['dep_date'] === undefined) {
                 check = true;
-            }else{
-                if(!check && !warn && !item['price_arr'] || item['price_arr'].length === 0 ){
+            } else {
+                if (!check && !warn && !item['price_arr'] || item['price_arr'].length === 0) {
                     warn = true;
                     warn_date = item['dep_date'];
                 }
             }
-            if(!detail_check){
-                item['price_arr'].map((detail:any) =>{
-                    if(detail['room_type'] === '' ||detail['room_type'] === null ||detail['room_type'] === undefined  ){
+            if (!detail_check) {
+                item['price_arr'].map((detail: any) => {
+                    if (detail['room_type'] === '' || detail['room_type'] === null || detail['room_type'] === undefined) {
                         detail_check = true;
                     }
                     // if(detail['location'] === '' ||detail['location'] === null ||detail['location'] === undefined  ){
                     //     detail_check = true;
                     // }
-                    if(detail['price'] === 0 ||detail['price'] === null ||detail['price'] === undefined  ){
+                    if (detail['price'] === 0 || detail['price'] === null || detail['price'] === undefined) {
                         detail_check = true;
                     }
-                    if(detail['duoren_price'] === 0 ||detail['duoren_price'] <0 ){
+                    if (detail['duoren_price'] === 0 || detail['duoren_price'] < 0) {
                         duoren_check = true;
                     }
                 })
             }
         })
-        if(check){
+        if (check) {
             Modal.error({
-                title:'缺少必填项',
-                content:'出发日期是必填的'
-            })
-            return ;
-        }
-        if(duoren_check){
-            Modal.error({
-                title:'三/四人价格错误',
-                content:'三/四人价格 不能小于或等于0，若无三/四人价 请清空'
+                title: '缺少必填项',
+                content: '出发日期是必填的'
             })
             return;
         }
-        if(detail_check){
+        if (duoren_check) {
             Modal.error({
-                title:'缺少必填项',
-                content:'请完善价格：房型，一/二人价格都是必填项'
+                title: '三/四人价格错误',
+                content: '三/四人价格 不能小于或等于0，若无三/四人价 请清空'
             })
             return;
         }
-        if(warn){
+        if (detail_check) {
+            Modal.error({
+                title: '缺少必填项',
+                content: '请完善价格：房型，一/二人价格都是必填项'
+            })
+            return;
+        }
+        if (warn) {
             Modal.confirm({
-                title:'警告',
-                content:`${warn_date}未填写价格,确认提交吗`,
-                onOk:()=>{
+                title: '警告',
+                content: `${warn_date}未填写价格,确认提交吗`,
+                onOk: () => {
                     submit("/productStore/Group/submit", {
-                        product_id:ref.id,
-                        group:data
+                        product_id: ref.id,
+                        group: data
                     }).then(r => {
                         message.success(r.message);
                         modalRef.destroy();
@@ -106,11 +106,11 @@ const addGroup = (reload: () => void) => (ref: any) => {
                     });
                 }
             })
-            return ;
+            return;
         }
         submit("/productStore/Group/submit", {
-            product_id:ref.id,
-            group:data
+            product_id: ref.id,
+            group: data
         }).then(r => {
             message.success(r.message);
             modalRef.destroy();
@@ -129,6 +129,14 @@ const addGroup = (reload: () => void) => (ref: any) => {
         cancelButtonProps: { className: "hide" }
     });
 }
+
+const recommand = (reload: () => void) => (ref: any) => {
+    submit("/productStore/Product/recommand", { id: ref.id,is_recom:ref.is_recom }).then(r => {
+        message.success(r.message);
+        reload();
+    });
+}
+
 
 const list: React.FC<IModPageProps> = ({ route }) => {
     const { viewConfig, authority } = route;
@@ -156,6 +164,7 @@ const list: React.FC<IModPageProps> = ({ route }) => {
         新增产品: add(load),
         修改产品: edit(load),
         新增团期: addGroup(load),
+        设为首页推荐产品: recommand(load)
     };
 
 
@@ -223,6 +232,11 @@ const list: React.FC<IModPageProps> = ({ route }) => {
                                 title={item['name']}
                                 description={`产品类型: ${colDisplay(item['kind'], 'PdKind', item)}`}
                             />
+                            {
+                                item['is_recom'] ==1 && <div style={{ display: 'flex', flexDirection: 'column', marginRight: '20px' }}>
+                                    <span style={{color:'green'}}>*首页推荐*</span>
+                                </div>
+                            }
                             <div style={{ display: 'flex', flexDirection: 'column', marginRight: '20px' }}>
                                 <span>天数</span>
                                 <div className={styles.text}>

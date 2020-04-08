@@ -23,7 +23,8 @@ const add = (reload: () => void) => () => {
   const list = {
     country: { text: "国家", required: true, type: 'Country' },
     name: { text: '名称', required: true },
-    code: {text:'城市代码'}
+    code: {text:'城市代码'},
+    pic: {text:'展示图片',type:'Pic',file:'CityPic'},
   };
   const onSubmit = (data: any) => {
     submit("/business/City/submit", data).then(r => {
@@ -50,7 +51,8 @@ const edit = (reload: () => void) => (ref: any) => {
   const list = {
     country: { text: "国家", required: true, type: 'Country' },
     name: { text: '名称', required: true },
-    code: {text:'城市代码'}
+    code: {text:'城市代码'},
+    pic: {text:'展示图片',type:'Pic',file:'CityPic'},
   };
   const onSubmit = (data: object | undefined) => {
     submit("/business/City/submit", {id:ref.id,...data}).then(r => {
@@ -159,7 +161,7 @@ const list: React.FC<IModPageProps> = ({ route }) => {
               ]}
             >
               <List.Item.Meta
-                avatar={<Avatar src={IconPng} shape="square" size="large" />}
+                avatar={<Avatar src={item['pic']=='' ?IconPng:item['pic']} shape="square" size="large" />}
                 title={item['name']}
                 description={
                   `所在国家:${colDisplay(item['country'], 'Country', item)}`

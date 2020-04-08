@@ -1,8 +1,10 @@
 import React, { useMemo } from "react";
-import { Select, Input, DatePicker, TimePicker, Col, InputNumber, Button, Form } from "antd";
+import { Select, Input, DatePicker, TimePicker, Col, InputNumber, Button, Form, Upload, message } from "antd";
 import { getEnum } from "@/utils/enum";
 
 import styles from "./index.less";
+import { upload } from "@/utils/req";
+import { PlusOutlined } from "@ant-design/icons";
 
 const { Option } = Select;
 
@@ -59,7 +61,7 @@ const ModalForm: React.FC<IModalForm> = ({
       cField = clearCascade(cField);
     }
     form.setFieldsValue(
-      {...rst}
+      { ...rst }
     )
   }
 
@@ -186,6 +188,68 @@ const ModalForm: React.FC<IModalForm> = ({
     return null;
   };
 
+  const renderPic = (cfg:any,field: string, url: string = '') => {
+    const imgUploadCheck = () => {
+      return true;
+    }
+
+    const handleChange = (info: any) => {
+      if (info.file.status === 'uploading') {
+        return;
+      }
+      if (info.file.status === 'done') {
+        const rst = form.getFieldsValue();
+        rst[field] = info.file.save_path;
+        form.setFieldsValue(
+          { ...rst}
+        )
+      } else if (info.file.status === 'error') {
+        message.error(`${info.file.name} 文件上传失败.`);
+      }
+    };
+
+    const handleUpload = (prop: { file: File }) => {
+      const formData = new FormData();
+      const { file } = prop;
+      formData.append('file', file);
+      upload(formData, cfg.file ?cfg.file:'pic').then(res => {
+        if (res.success && res.save_path) {
+          const fileinfo = { file: { status: 'done', name: file.name, save_path: res.save_path } }
+          handleChange(fileinfo);
+        } else {
+          handleChange({ file: { status: 'error', name: file.name } });
+        }
+      }, () => {
+        handleChange({ file: { status: 'error', name: file.name } });
+      })
+    };
+
+    const uploadArea = () => {
+      if(url){
+        return (
+          <img src={url} style={{width:'104px',height:'104px'}}/>
+        )
+      }
+      return (
+          <>
+              <PlusOutlined />
+              <div className="ant-upload-text">上传</div>
+          </>
+      )
+    }
+
+    return <Upload
+      listType="picture-card"
+      multiple={false}
+      showUploadList={false}
+      beforeUpload={imgUploadCheck}
+      onChange={info => handleChange(info)}
+      customRequest={({ file }) => handleUpload({ file })}
+    >
+      {uploadArea()}
+    </Upload>
+  }
+
   const submit = () => {
     if (onSubmit) {
       form.validateFields().then(
@@ -266,6 +330,18 @@ const ModalForm: React.FC<IModalForm> = ({
                 )}
               {list[field].editable === false &&
                 list[field].type &&
+                list[field].type == "Pic" && (
+                  <Form.Item
+                    style={{ margin: "12px 0" }}
+                    label={list[field].text}
+                    name={field}
+                  >
+                    <img src={formData[field]} style={{width:'104px',height:'104px'}}/>
+                  </Form.Item>
+                )}
+              {list[field].editable === false &&
+                list[field].type &&
+                list[field].type !== "Pic" &&
                 list[field].type !== "number" &&
                 list[field].type !== "date" &&
                 list[field].type !== "time" &&
@@ -284,7 +360,7 @@ const ModalForm: React.FC<IModalForm> = ({
                   style={{ margin: "12px 0" }}
                   label={list[field].text}
                   name={field}
-                  rules={[{ required: true, message: `请输入${list[field].text}` }]}
+                  rules={[{ required: list[field].required, message: `请输入${list[field].text}` }]}
                 >
                   <Input
                   />
@@ -349,6 +425,34 @@ const ModalForm: React.FC<IModalForm> = ({
                     {renderPairEditSelect(list[field], field)}
                   </Form.Item>
                 )}
+              {list[field].editable !== false &&
+                list[field].type &&
+                list[field].type == "Pic" && (
+                  <Form.Item
+                    noStyle
+                    shouldUpdate={(prevValues, currentValues) => {
+                      return prevValues[field] != currentValues[field];
+                    }}
+                  >
+                    {({getFieldValue}) => {
+                        return (
+                          <Form.Item
+                          style={{ margin: "12px 0" }}
+                          label={list[field].text}
+                          name={field}
+                          getValueFromEvent={(e)=>{
+                            if(e && e.file && e.file.save_path){
+                              return e.file.save_path
+                            }
+                          }}
+                          rules={[{ required: list[field].required, message: `请输入${list[field].text}` }]}
+                        >
+                          {renderPic(list[field],field,getFieldValue(field))}
+                          </Form.Item>
+                        )
+                    }}
+                  </Form.Item>
+                )}
 
               {
                 list[field].editable !== false &&
@@ -358,6 +462,7 @@ const ModalForm: React.FC<IModalForm> = ({
                 list[field].type !== "date" &&
                 list[field].type !== "time" &&
                 list[field].type !== "ArrayEdit" &&
+                list[field].type !== "Pic" &&
                 list[field].type !== "PairEdit" && (
                   <Form.Item
                     noStyle
