@@ -137,7 +137,9 @@ class FoodInfo extends React.Component<IFoodInfoProps>{
         const food = { ...info[foodIndex] };
         const index = food.pic_arr.findIndex((value) => value.uid === file.uid);
         if (index !== -1) {
-            food.pic_arr.splice(index, 1);
+            const pic_arr = [...food.pic_arr];
+            pic_arr.splice(index, 1);
+            food.pic_arr = pic_arr;
             info[foodIndex] = food;
             update([...info])
         }

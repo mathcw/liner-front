@@ -198,7 +198,9 @@ class RoomInfo extends React.Component<IroomInfoProps>{
         const room = { ...info[roomIndex] };
         const index = room.pic_arr.findIndex((value) => value.uid === file.uid);
         if (index !== -1) {
-            room.pic_arr.splice(index, 1);
+            const pic_arr = [...room.pic_arr];
+            pic_arr.splice(index, 1);
+            room.pic_arr = pic_arr;
             info[roomIndex] = room;
             update([...info])
         }

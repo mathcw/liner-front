@@ -193,7 +193,9 @@ class ItinInfo extends React.Component<IitinInfoProps>{
         const itin = { ...info[foodIndex] };
         const index = itin.pic_arr.findIndex((value) => value.uid === file.uid);
         if (index !== -1) {
-            itin.pic_arr.splice(index, 1);
+            const pic_arr = [...itin.pic_arr];
+            pic_arr.splice(index, 1);
+            itin.pic_arr = pic_arr;
             info[foodIndex] = itin;
             update([...info])
         }

@@ -137,7 +137,9 @@ class GameInfo extends React.Component<IGameInfoProps>{
         const game = { ...info[gameIndex] };
         const index = game.pic_arr.findIndex((value) => value.uid === file.uid);
         if (index !== -1) {
-            game.pic_arr.splice(index, 1);
+            const pic_arr = [...game.pic_arr];
+            pic_arr.splice(index, 1);
+            game.pic_arr = pic_arr;
             info[gameIndex] = game;
             update([...info])
         }
