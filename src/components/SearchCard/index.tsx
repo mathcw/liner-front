@@ -21,7 +21,7 @@ const SearchCard: React.FC<FormProps> = ({
     textSearch = {}
 }) => {
     const [expand, setExpand] = useState(false);
-    const needExpand = (Object.keys(dropDownSearch).length + Object.keys(textSearch).length) > 2;
+    const needExpand = (Object.keys(dropDownSearch).length + Object.keys(textSearch).length) >= 2;
     const [form] = Form.useForm();
 
     const onDropDownChange = (field: React.ReactText, value: any) => {

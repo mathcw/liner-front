@@ -175,6 +175,26 @@ const routes: Array<IRouteValue> = [
         ]
       },
       {
+        name: "订单管理",
+        path: "/order",
+        routes: [
+          {
+            path: "/order/Zixun",
+            name: "客户咨询",
+            authority: "客户咨询",
+            viewConfig: "客户咨询",
+            component: "./order/Zixun"
+          },
+          {
+            path: "/order/OrderList",
+            name: "客户订单",
+            authority: "客户订单",
+            viewConfig: "客户订单",
+            component: "./order/OrderList"
+          },
+        ]
+      },
+      {
         name: "系统设置",
         path: "/sys",
         routes: [
