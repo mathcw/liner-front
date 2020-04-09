@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { Input, message, Row, Col, Upload, Select, DatePicker, InputNumber, Tabs } from 'antd';
-import BraftEditor, { EditorState, ControlType } from 'braft-editor'
 import 'braft-editor/dist/index.css'
 import { IActionPageProps } from '@/viewconfig/ActionConfig';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
@@ -43,8 +42,6 @@ const renderOptions = (options: object) => {
     )
 }
 
-const controls: ControlType[] = ['bold', 'italic', 'underline', 'text-color', 'separator', 'link', 'separator'];
-
 const uploadArea = () => {
     return (
         <>
@@ -67,9 +64,9 @@ interface Iinfo{
     width:number,
     speed:number,
     pic_arr:Array<Ipic>,
-    editor: EditorState,
+    // editor: EditorState,
     des: string,
-    des_html: string,
+    // des_html: string,
     kind:string,
 }
 
@@ -90,9 +87,9 @@ const Page: React.FC<IActionPageProps> = ({ route, location }) => {
         width:0,
         speed:0,
         pic_arr:[],
-        editor: BraftEditor.createEditorState(''),
+        // editor: BraftEditor.createEditorState(''),
         des: '',
-        des_html: '',
+        // des_html: '',
         kind:'',
     });
 
@@ -123,7 +120,7 @@ const Page: React.FC<IActionPageProps> = ({ route, location }) => {
                 },
                 des:{
                     des: baseInfo.des,
-                    des_html: baseInfo.des_html
+                    // des_html: baseInfo.des_html
                 },
                 pic_arr:baseInfo.pic_arr.map(item => item.url),
                 roomInfo:roomInfo.map(room =>{
@@ -180,7 +177,7 @@ const Page: React.FC<IActionPageProps> = ({ route, location }) => {
             read(cfg.read.url,{action:authority},{...ref},cfg.read.data).then(r => {
                 if(r.data){
                     let loadBase = r.data['baseInfo'];
-                    let State = BraftEditor.createEditorState(r.data['des'] || '');
+                    // let State = BraftEditor.createEditorState(r.data['des'] || '');
                     let pic_arr = [];
                     if(r.data['pic_arr']){
                         pic_arr = r.data['pic_arr'].map((url:string)=>{
@@ -192,7 +189,7 @@ const Page: React.FC<IActionPageProps> = ({ route, location }) => {
                             }
                         })
                     }
-                    setBaseInfo({...loadBase,pic_arr,editor: State,des: r.data['des'], des_html: r.data['des_html']});
+                    setBaseInfo({...loadBase,pic_arr , des: r.data['des']});
 
                     if(r.data['video']){
                         setVideo(r.data['video']);
@@ -349,18 +346,15 @@ const Page: React.FC<IActionPageProps> = ({ route, location }) => {
     };
 
     //room 
-    const handleEditorChange = (HeditorState: EditorState) => {
-        setBaseInfo({ ...baseInfo, editor: HeditorState, des_html: HeditorState.toHTML(), des: HeditorState.toRAW() });
-    };
-
     const renderDes = () => {
         return (
             <div className="editor-wrapper" style={{ backgroundColor: 'white' }}>
-                <BraftEditor
+                {/* <BraftEditor
                     value={baseInfo.editor}
                     onChange={handleEditorChange}
                     controls={controls}
-                />
+                /> */}
+                <Input.TextArea autoSize value={baseInfo.des} style={{ width: '100%',minHeight:'104px' }} onChange={(e) => { changeBaseInfo(e.target.value, 'des') }}/>
             </div>
         )
     }
