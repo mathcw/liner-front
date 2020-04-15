@@ -417,7 +417,7 @@ const Page: React.FC<IActionPageProps> = ({ route, location }) => {
                         </Col>
                     </Row>
                     <Row className={styles.row}>
-                        <Col span={3} className={styles.cellLabel}>
+                        {/* <Col span={3} className={styles.cellLabel}>
                             星级
                         </Col>
                         <Col span={8} className={styles.cellSelect}>
@@ -432,6 +432,17 @@ const Page: React.FC<IActionPageProps> = ({ route, location }) => {
                                     renderOptions(getEnum('StarLevel'))
                                 }
                             </Select>
+                        </Col> */}
+                        <Col span={3} className={styles.cellLabel}>
+                            使用时间
+                        </Col>
+                        <Col span={8} className={styles.cellSelect}>
+                            <YearPicker
+                                style={{ width: '100%' }}
+                                getPopupContainer={(triggerNode: Element) => triggerNode as HTMLElement}
+                                onChange={(v) => changeBaseInfo(v?.format('YYYY'), 'date_of_use')}
+                                value={moment(baseInfo.date_of_use)}
+                            />
                         </Col>
                         <Col span={3} className={styles.cellLabel} style={{ marginLeft: '10px' }}>
                             客房数
@@ -517,17 +528,6 @@ const Page: React.FC<IActionPageProps> = ({ route, location }) => {
                             <InputNumber style={{ width: '100%' }} min={1} 
                             value={baseInfo.speed}
                             onChange={(v) => changeBaseInfo(v, 'speed')} />
-                        </Col>
-                        <Col span={3} className={styles.cellLabel} style={{ marginLeft: '10px' }}>
-                            使用时间
-                        </Col>
-                        <Col span={8} className={styles.cellSelect}>
-                            <YearPicker
-                                style={{ width: '100%' }}
-                                getPopupContainer={(triggerNode: Element) => triggerNode as HTMLElement}
-                                onChange={(v) => changeBaseInfo(v?.format('YYYY'), 'date_of_use')}
-                                value={moment(baseInfo.date_of_use)}
-                            />
                         </Col>
                     </Row>
                 </Col>

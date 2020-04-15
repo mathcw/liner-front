@@ -3,7 +3,8 @@ import { sys } from "@/utils/core";
 export const dict = {
   Business: {
     1:'价格类型',
-    2:'客房类型'
+    2:'客房类型',
+    3:'产品分类',
   },
   YesNo: { 0: '不允许', 1: '允许' },
   State: { 0: '停用', 1: '启用' },
@@ -65,7 +66,8 @@ export const dict = {
   PdKind:{
     1:'单船票',
     2:'邮轮套餐(团队游)',
-    3:'河轮套餐(团队游)'
+    3:'河轮套餐(团队游)',
+    4:'跟团游'
   },
   enum_ver: ""
 };

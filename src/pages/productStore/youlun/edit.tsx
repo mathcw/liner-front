@@ -59,6 +59,7 @@ interface Iinfo {
     day: number,
     night: number,
     pic_arr:Array<Ipic>,
+    theme_arr: Array<string>,
 }
 
 const Page: React.FC<IActionPageProps> = ({ route, location }) => {
@@ -74,7 +75,9 @@ const Page: React.FC<IActionPageProps> = ({ route, location }) => {
         destination: '',
         day: 0,
         night: 0,
-        pic_arr:[]
+        pic_arr:[],
+        theme_arr: [],
+
     });
 
     const [brightSpot,setBrightSpot] = useState<string>('');
@@ -94,6 +97,10 @@ const Page: React.FC<IActionPageProps> = ({ route, location }) => {
             read(cfg.read.url,{action:authority},{...ref},cfg.read.data).then(r => {
                 if(r.data){
                     let loadBase = r.data['baseInfo'];
+                    let theme_arr = [];
+                    if (r.data['theme_arr']) {
+                        theme_arr = r.data['theme_arr'];
+                    }
                     let pic_arr = [];
                     if(r.data['pic_arr']){
                         pic_arr = r.data['pic_arr'].map((url:string)=>{
@@ -105,7 +112,7 @@ const Page: React.FC<IActionPageProps> = ({ route, location }) => {
                             }
                         })
                     }
-                    setBaseInfo({...loadBase,pic_arr});
+                    setBaseInfo({...loadBase,pic_arr,theme_arr});
                     if(r.data['itinInfo']){
                         let loaditin =  r.data['itinInfo'].map((itin:any)=>{
                             if(itin['pic_arr'] && itin['pic_arr'].length >0){
@@ -191,6 +198,7 @@ const Page: React.FC<IActionPageProps> = ({ route, location }) => {
                                 day: baseInfo.day,
                                 night: baseInfo.night
                             },
+                            theme_arr:baseInfo.theme_arr,
                             pic_arr:baseInfo.pic_arr.map(item => item.url),
                             itinInfo:itinInfo.map(itin =>{
                                 return {
@@ -233,6 +241,8 @@ const Page: React.FC<IActionPageProps> = ({ route, location }) => {
                     day: baseInfo.day,
                     night: baseInfo.night
                 },
+                theme_arr:baseInfo.theme_arr,
+
                 pic_arr:baseInfo.pic_arr.map(item => item.url),
                 itinInfo:itinInfo.map(itin =>{
                     return {
@@ -447,6 +457,25 @@ const Page: React.FC<IActionPageProps> = ({ route, location }) => {
                             <InputNumber style={{ width: '100%' }} min={0}
                                 value={baseInfo.night}
                                 onChange={(v) => changeBaseInfo(v, 'night')} />
+                        </Col>
+                    </Row>
+                    <Row className={styles.row}>
+                        <Col span={3} className={styles.cellLabel}>
+                            产品分类
+                        </Col>
+                        <Col span={20} className={styles.cellInput}>
+                            <Select
+                                mode="multiple"
+                                style={{ width: '100%' }}
+                                showSearch
+                                optionFilterProp='children'
+                                onChange={(v) => (changeBaseInfo(v, 'theme_arr'))}
+                                value={baseInfo.theme_arr}
+                            >
+                                {
+                                    renderOptions(getEnum('PdTheme'))
+                                }
+                            </Select>
                         </Col>
                     </Row>
                 </Col>

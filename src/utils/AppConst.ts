@@ -34,4 +34,5 @@ export default {
     PD_KIND_DAN:1,
     PD_KIND_YOU:2,
     PD_KIND_HE:3,
+    PD_KIND_TOUR:4,
 }

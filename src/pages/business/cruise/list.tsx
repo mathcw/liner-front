@@ -164,12 +164,12 @@ const list: React.FC<IModPageProps> = ({ route }) => {
                   `所属公司:${colDisplay(item['cruise_company_id'], 'CruiseCompany', item)}`
                 }
               />
-              <div style={{ display: 'flex', flexDirection: 'column', marginRight: '20px' }}>
+              {/* <div style={{ display: 'flex', flexDirection: 'column', marginRight: '20px' }}>
                 <span>星级</span>
                 <div className={styles.text}>
                   {colDisplay(item['level'], 'StarLevel', item)}`
                 </div>
-              </div>
+              </div> */}
               <div style={{ display: 'flex', flexDirection: 'column', marginRight: '20px' }}>
                 <span>最近变动</span>
                 <div className={styles.text}>

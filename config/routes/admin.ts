@@ -172,6 +172,22 @@ const routes: Array<IRouteValue> = [
             hideInMenu: true,
             component: "./productStore/helun/edit"
           },
+          {
+            path: "/productStore/tour/add",
+            name: "新增跟团游",
+            authority: "新增跟团游",
+            viewConfig: "新增跟团游",
+            hideInMenu: true,
+            component: "./productStore/tour/edit"
+          },
+          {
+            path: "/productStore/tour/edit",
+            name: "修改跟团游",
+            authority: "修改跟团游",
+            viewConfig: "修改跟团游",
+            hideInMenu: true,
+            component: "./productStore/tour/edit"
+          },
         ]
       },
       {

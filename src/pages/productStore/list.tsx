@@ -30,7 +30,9 @@ const edit = (reload: () => void) => (ref: any) => {
     if (ref.kind == AppConst.PD_KIND_YOU) {
         getBtnClickEvent('修改邮轮套餐')(ref);
         return;
-
+    }
+    if(ref.kind == AppConst.PD_KIND_TOUR){
+        getBtnClickEvent('修改跟团游')(ref);
     }
 }
 
@@ -196,6 +198,9 @@ const list: React.FC<IModPageProps> = ({ route }) => {
         if (pdKind == AppConst.PD_KIND_HE) {
             getBtnClickEvent('新增河轮套餐')({});
         }
+        if (pdKind == AppConst.PD_KIND_TOUR){
+            getBtnClickEvent('新增跟团游')({})
+        }
     }
 
     const addProductCancel = () => {
@@ -285,6 +290,9 @@ const list: React.FC<IModPageProps> = ({ route }) => {
                     </Radio>
                     <Radio style={{ display: 'block', height: '30px', lineHeight: '30px' }} value={3}>
                         {colDisplay(3, 'PdKind', {})}
+                    </Radio>
+                    <Radio style={{ display: 'block', height: '30px', lineHeight: '30px' }} value={4}>
+                        {colDisplay(4, 'PdKind', {})}
                     </Radio>
                 </Radio.Group>
             </Modal>
