@@ -27,14 +27,14 @@ const Page: React.FC<IActionPageProps> = ({ route, location }) => {
     const initData: {
         'name': string,
         'banner': string,
-        'editor': EditorState,
+        // 'editor': EditorState,
         'des': string,
         'des_html': string,
         'xml'?: string,
     } = {
         'name': '',
         'banner': '',
-        'editor': BraftEditor.createEditorState(''),
+        // 'editor': BraftEditor.createEditorState(''),
         'des': '',
         'des_html': '',
         'xml': ''
@@ -71,8 +71,8 @@ const Page: React.FC<IActionPageProps> = ({ route, location }) => {
 
     useEffect(() => {
         load().then((loadRst) => {
-            let State = BraftEditor.createEditorState(loadRst.des || '');
-            setData({ name: loadRst.name, banner: loadRst.banner, editor: State, des: loadRst.des, des_html: loadRst.des_html });
+            // let State = BraftEditor.createEditorState(loadRst.des || '');
+            setData({ name: loadRst.name, banner: loadRst.banner, des: loadRst.des, des_html: loadRst.des_html });
         });
     }, [])
 
@@ -80,11 +80,15 @@ const Page: React.FC<IActionPageProps> = ({ route, location }) => {
         setData({ ...data, name: e.target.value });
     };
 
-    const handleEditorChange = (HeditorState: EditorState) => {
-        setData({ ...data, editor: HeditorState, des_html: HeditorState.toHTML(), des: HeditorState.toRAW() });
-    };
+    const changeDes = (v:any)=>{
+        setData({ ...data, des: v });
+    }
 
-    const controls: ControlType[] = ['bold', 'italic', 'underline', 'text-color', 'separator', 'link', 'separator'];
+    // const handleEditorChange = (HeditorState: EditorState) => {
+    //     setData({ ...data, editor: HeditorState, des_html: HeditorState.toHTML(), des: HeditorState.toRAW() });
+    // };
+
+    // const controls: ControlType[] = ['bold', 'italic', 'underline', 'text-color', 'separator', 'link', 'separator'];
 
     const { btns } = useActionBtn(viewConfig, actionMap);
 
@@ -179,11 +183,12 @@ const Page: React.FC<IActionPageProps> = ({ route, location }) => {
                     <span>公司介绍:</span>
                 </Col>
                 <Col span={24} className="editor-wrapper" style={{ backgroundColor: 'white' }}>
-                    <BraftEditor
+                    {/* <BraftEditor
                         value={data.editor}
                         onChange={handleEditorChange}
                         controls={controls}
-                    />
+                    /> */}
+                    <Input.TextArea autoSize value={data.des} style={{ width: '100%',minHeight:'104px' }} onChange={(e) => { changeDes(e.target.value) }}/>
                 </Col>
             </Row>
 

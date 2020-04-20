@@ -63,6 +63,7 @@ interface Iinfo{
     length:number,
     width:number,
     speed:number,
+    tonnage:number,
     pic_arr:Array<Ipic>,
     // editor: EditorState,
     des: string,
@@ -83,9 +84,10 @@ const Page: React.FC<IActionPageProps> = ({ route, location }) => {
         place_of_build:'',
         master:'',
         date_of_use:moment().format('YYYY'),
-        length:0,
-        width:0,
-        speed:0,
+        length:1,
+        width:1,
+        speed:1,
+        tonnage:1,
         pic_arr:[],
         // editor: BraftEditor.createEditorState(''),
         des: '',
@@ -116,6 +118,7 @@ const Page: React.FC<IActionPageProps> = ({ route, location }) => {
                     width:baseInfo.width,
                     speed:baseInfo.speed,
                     kind:baseInfo.kind,
+                    tonnage:baseInfo.tonnage,
                     video
                 },
                 des:{
@@ -457,7 +460,7 @@ const Page: React.FC<IActionPageProps> = ({ route, location }) => {
                     </Row>
                     <Row className={styles.row}>
                         <Col span={3} className={styles.cellLabel}>
-                            建造年份
+                            翻新时间
                         </Col>
                         <Col span={8} className={styles.cellSelect}>
                             <YearPicker
@@ -528,6 +531,14 @@ const Page: React.FC<IActionPageProps> = ({ route, location }) => {
                             <InputNumber style={{ width: '100%' }} min={1} 
                             value={baseInfo.speed}
                             onChange={(v) => changeBaseInfo(v, 'speed')} />
+                        </Col>
+                        <Col span={3} className={styles.cellLabel} style={{ marginLeft: '10px' }}>
+                            吨位(吨)
+                        </Col>
+                        <Col span={8} className={styles.cellInput}>
+                            <InputNumber style={{ width: '100%' }} min={1} 
+                            value={baseInfo.tonnage}
+                            onChange={(v) => changeBaseInfo(v, 'tonnage')} />
                         </Col>
                     </Row>
                 </Col>

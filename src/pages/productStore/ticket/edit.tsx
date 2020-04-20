@@ -414,14 +414,14 @@ const Page: React.FC<IActionPageProps> = ({ route, location }) => {
                 <Tabs.TabPane tab="费用说明" key="费用说明">
                     <Row>
                         <Col span={24} className="editor-wrapper" style={{ backgroundColor: 'white' }}>
-                            <Tabs style={{ backgroundColor: 'white' }} defaultActiveKey="旅游费用" tabPosition="left">
-                                <Tabs.TabPane tab="旅游费用" key="旅游费用">
+                            <Tabs style={{ backgroundColor: 'white' }} defaultActiveKey="报价包含" tabPosition="left">
+                                {/* <Tabs.TabPane tab="旅游费用" key="旅游费用">
                                     <Row>
                                         <Col span={24} className="editor-wrapper" style={{ backgroundColor: 'white' }}>
                                             <Input.TextArea autoSize value={feeInfo} style={{ width: '100%', minHeight: '190px' }} onChange={(e) => setFeeInfo(e.target.value)} />
                                         </Col>
                                     </Row>
-                                </Tabs.TabPane>
+                                </Tabs.TabPane> */}
                                 <Tabs.TabPane tab="报价包含" key="报价包含">
                                     <Row>
                                         <Col span={24} className="editor-wrapper" style={{ backgroundColor: 'white' }}>
