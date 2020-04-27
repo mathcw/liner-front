@@ -90,7 +90,23 @@ export const getCols = function <T extends IDataType>(
             dataIndex: v,
             key: v,
             width: colCfg.width ? colCfg.width : colWidth,
-            onCell: (record: T) => ({
+            onCell: (record: T) => {
+            if(colCfg.edit_path){
+                return {
+                    record,
+                    initValue: record[v],
+                    editable: colCfg.editable,
+                    dataIndex: v,
+                    rowIndex:record.uuid,
+                    required: colCfg.required,
+                    title: colCfg.text,
+                    type: colCfg.type,
+                    render: colCfg.render || display,
+                    edit_path:colCfg.edit_path,
+                    update:update
+                }
+            }
+            return {
                 record,
                 initValue: record[v],
                 editable: colCfg.editable,
@@ -101,7 +117,7 @@ export const getCols = function <T extends IDataType>(
                 type: colCfg.type,
                 render: colCfg.render || display,
                 update:update
-            }),
+            }},
             sorter: (a: T, b: T) => {
                 if (colCfg.sorter) {
                     return colCfg.sorter(a, b);

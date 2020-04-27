@@ -14,6 +14,7 @@ interface ICfg {
   type?: string; // 类型
   width?: number; // 宽度
   cascade?: string;
+  edit_path?: Array<any>|Object;
 }
 
 interface IModalForm {
@@ -108,7 +109,7 @@ const ModalForm: React.FC<IModalForm> = ({
     field: string,
     disabled: boolean = false
   ) => {
-    const Enum = getEnum(cfg, data) || [];
+    const Enum = cfg.edit_path || [];
     if (cfg.multi) {
       return <Select
         showSearch
@@ -191,9 +192,8 @@ const ModalForm: React.FC<IModalForm> = ({
     field: string,
     disabled: boolean = false
   ) => {
-    let selectArrName = cfg.edit_path;
     if (ref) {
-      const Enum = ref[selectArrName] || {};
+      const Enum = cfg.edit_path || {};
       if (cfg.multi) {
         return (
           <Select

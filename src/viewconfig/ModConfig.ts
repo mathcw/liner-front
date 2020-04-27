@@ -31,6 +31,7 @@ export interface ICol<T=any> {
   type?: string;
   width?: number;
   render?:(record:T, value:string | number, dataIndex:string | number, type:string)=>JSX.Element;
+  edit_path?:Array<any>|Object;
   sorter?:CompareFn<T>
 }
 
