@@ -36,6 +36,25 @@ const edit = (reload: () => void) => (ref: any) => {
     }
 }
 
+const copy = (reload: () => void) => (ref: any) => {
+    if (ref.kind == AppConst.PD_KIND_DAN) {
+        getBtnClickEvent('复制单船票')(ref);
+        return;
+    }
+    if (ref.kind == AppConst.PD_KIND_HE) {
+        getBtnClickEvent('复制河轮套餐')(ref);
+        return;
+
+    }
+    if (ref.kind == AppConst.PD_KIND_YOU) {
+        getBtnClickEvent('复制邮轮套餐')(ref);
+        return;
+    }
+    if(ref.kind == AppConst.PD_KIND_TOUR){
+        getBtnClickEvent('复制跟团游')(ref);
+    }
+}
+
 const addGroup = (reload: () => void) => (ref: any) => {
     const modalRef = Modal.info({});
 
@@ -166,6 +185,7 @@ const list: React.FC<IModPageProps> = ({ route }) => {
         新增产品: add(load),
         修改产品: edit(load),
         新增团期: addGroup(load),
+        复制产品: copy(load),
         设为首页推荐产品: recommand(load)
     };
 

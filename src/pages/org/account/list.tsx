@@ -113,6 +113,40 @@ const setAuth = (reload: () => void) => (ref: any) => {
     });
 };
 
+const setPassword = (reload: () => void) => (ref: any) => {
+    const modalRef = Modal.info({});
+    const list = {
+        password: { text: "密码", required: true },
+    };
+    const onSubmit = (data: object | undefined) => {
+        submit("/org/Account/set_password", {id:ref.id,...data}).then(r => {
+            message.success(r.message);
+            modalRef.destroy();
+            reload();
+        });
+    };
+    const onCancel = () => {
+        modalRef.destroy();
+    };
+    
+    modalRef.update({
+        title: "设置密码",
+        // eslint-disable-next-line max-len
+        icon: null,
+        content: (
+            <ModalForm
+            list={list}
+            onSubmit={onSubmit}
+            onCancel={onCancel}
+            data={{}}
+            />
+        ),
+        okButtonProps: { className: "hide" },
+        cancelButtonProps: { className: "hide" }
+    });
+};
+
+
 const list: React.FC<IModPageProps> = ({ route }) => {
     const { viewConfig,authority } = route;
     const {
@@ -131,7 +165,9 @@ const list: React.FC<IModPageProps> = ({ route }) => {
     const actionMap = {
         新增账号: add(load),
         修改账号: edit(load),
-        设置账号权限:setAuth(load)
+        设置账号权限:setAuth(load),
+        设置账号密码:setPassword(load)
+
     };
     const { headerBtns, rowBtns } = useListPageBtn(viewConfig,actionMap);
     const { dropDownSearch, textSearch } = useListPageSearch(viewConfig);

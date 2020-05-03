@@ -33,6 +33,7 @@ const config: ModConfigItem = {
     rowButtons: {
       修改账号: { text: "修改" },
       启停账号: { text: "启停" },
+      设置账号密码: { text: "密码" },
       设置账号权限: { text: "设置" },
       重置账号密码: { text: "重置" }
     },

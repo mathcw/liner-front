@@ -17,6 +17,7 @@ const config: ModConfigItem = {
         },
         rowButtons: {
             修改产品:{ text: '修改'},
+            复制产品:{ text: '复制'},
             新增团期:{ text: '开团'},
             设为首页推荐产品:{text:'推荐'},
         },

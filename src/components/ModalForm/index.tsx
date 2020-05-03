@@ -1,9 +1,11 @@
 import React, { useState } from "react";
-import { Select, Input, DatePicker, TimePicker, Col, InputNumber, Button, Form } from "antd";
+import { Select, Input, DatePicker, TimePicker, Col, InputNumber, Button, Form, Upload, message } from "antd";
 import { getEnum } from "@/utils/enum";
 
 import styles from "./index.less";
 import moment from "moment";
+import { upload } from "@/utils/req";
+import { PlusOutlined } from "@ant-design/icons";
 
 const { Option } = Select;
 
@@ -14,7 +16,7 @@ interface ICfg {
   type?: string; // 类型
   width?: number; // 宽度
   cascade?: string;
-  edit_path?: Array<any>|Object;
+  edit_path?: Array<any> | Object;
 }
 
 interface IModalForm {
@@ -27,10 +29,10 @@ interface IModalForm {
   change?: (field: string, val: any, rst: any) => object;
 }
 
-interface IValidate{
-  [field:string]:{
-    validateStatus:any,
-    help:any
+interface IValidate {
+  [field: string]: {
+    validateStatus: any,
+    help: any
   }
 }
 
@@ -42,12 +44,12 @@ const initData = (list: IModalForm['list'], data: IModalForm['data']) => {
   return rst;
 }
 
-const initValidate = (list: IModalForm['list']) =>{
-  const rst:IValidate = {};
+const initValidate = (list: IModalForm['list']) => {
+  const rst: IValidate = {};
   Object.keys(list).forEach((field: string) => {
     rst[field] = {
-      validateStatus:null,
-      help:null
+      validateStatus: null,
+      help: null
     };
   })
   return rst;
@@ -59,8 +61,8 @@ const ModalForm: React.FC<IModalForm> = ({
   onSubmit,
   onCancel,
 }) => {
-  const [data,setData] = useState<{}>(initData(list, ref));
-  const [validate,setValidate] = useState<IValidate>(initValidate(list));
+  const [data, setData] = useState<{}>(initData(list, ref));
+  const [validate, setValidate] = useState<IValidate>(initValidate(list));
 
   const onChange = (value: any, field: string) => {
     const rst = {};
@@ -77,29 +79,29 @@ const ModalForm: React.FC<IModalForm> = ({
     }
     let cField = clearCascade(field);
     while (cField) {
-      if(list[cField].required){
+      if (list[cField].required) {
         validate[cField] = {
-          validateStatus:'error',
-          help:`请输入${list[cField].text}`
+          validateStatus: 'error',
+          help: `请输入${list[cField].text}`
         }
-        setValidate({...validate})
+        setValidate({ ...validate })
       }
       cField = clearCascade(cField);
     }
-    setData({...data,...rst});
-    if(list[field].required){
-      if(value === null ||value === undefined || value === '' || (Array.isArray(value) && value.length ===0)){
+    setData({ ...data, ...rst });
+    if (list[field].required) {
+      if (value === null || value === undefined || value === '' || (Array.isArray(value) && value.length === 0)) {
         validate[field] = {
-          validateStatus:'error',
-          help:`请输入${list[field].text}`
+          validateStatus: 'error',
+          help: `请输入${list[field].text}`
         }
-        setValidate({...validate})
-      }else{
+        setValidate({ ...validate })
+      } else {
         validate[field] = {
-          validateStatus:null,
-          help:null
+          validateStatus: null,
+          help: null
         }
-        setValidate({...validate})
+        setValidate({ ...validate })
       }
     }
   }
@@ -233,24 +235,82 @@ const ModalForm: React.FC<IModalForm> = ({
     return null;
   };
 
+  const renderPic = (cfg: any, field: string, url: string = '') => {
+    const imgUploadCheck = () => {
+      return true;
+    }
+
+    const handleChange = (info: any) => {
+      if (info.file.status === 'uploading') {
+        return;
+      }
+      if (info.file.status === 'done') {
+        onChange(info.file.save_path, field)
+      } else if (info.file.status === 'error') {
+        message.error(`${info.file.name} 文件上传失败.`);
+      }
+    };
+
+    const handleUpload = (prop: { file: File }) => {
+      const formData = new FormData();
+      const { file } = prop;
+      formData.append('file', file);
+      upload(formData, cfg.file ? cfg.file : 'pic').then(res => {
+        if (res.success && res.save_path) {
+          const fileinfo = { file: { status: 'done', name: file.name, save_path: res.save_path } }
+          handleChange(fileinfo);
+        } else {
+          handleChange({ file: { status: 'error', name: file.name } });
+        }
+      }, () => {
+        handleChange({ file: { status: 'error', name: file.name } });
+      })
+    };
+
+    const uploadArea = () => {
+      if (url) {
+        return (
+          <img src={url} style={{ width: '104px', height: '104px' }} />
+        )
+      }
+      return (
+        <>
+          <PlusOutlined />
+          <div className="ant-upload-text">上传</div>
+        </>
+      )
+    }
+
+    return <Upload
+      listType="picture-card"
+      multiple={false}
+      showUploadList={false}
+      beforeUpload={imgUploadCheck}
+      onChange={info => handleChange(info)}
+      customRequest={({ file }) => handleUpload({ file })}
+    >
+      {uploadArea()}
+    </Upload>
+  }
+
   const submit = () => {
     if (onSubmit) {
       let check = true;
       Object.keys(list).forEach((field: string) => {
-        if( check && validate[field].validateStatus == 'error'){
+        if (check && validate[field].validateStatus == 'error') {
           check = false;
         }
-        if( list[field].required && (data[field]===null || data[field] === undefined || data[field] ==='')){
+        if (list[field].required && (data[field] === null || data[field] === undefined || data[field] === '')) {
           check = false;
           validate[field] = {
-            validateStatus:'error',
-            help:`请输入${list[field].text}`
+            validateStatus: 'error',
+            help: `请输入${list[field].text}`
           }
-          setValidate({...validate})
+          setValidate({ ...validate })
         }
       })
-      if(!check){
-        return ;
+      if (!check) {
+        return;
       }
       onSubmit(data);
     }
@@ -261,7 +321,7 @@ const ModalForm: React.FC<IModalForm> = ({
       onCancel();
     }
   };
-  
+
   return (
     <React.Fragment>
       <Col className={styles.ModalForm}>
@@ -311,6 +371,18 @@ const ModalForm: React.FC<IModalForm> = ({
                 )}
               {list[field].editable === false &&
                 list[field].type &&
+                list[field].type == "Pic" && (
+                  <Form.Item
+                    style={{ margin: "12px 0" }}
+                    label={list[field].text}
+                    name={field}
+                  >
+                    <img src={data[field]} style={{ width: '104px', height: '104px' }} />
+                  </Form.Item>
+                )}
+              {list[field].editable === false &&
+                list[field].type &&
+                list[field].type !== "Pic" &&
                 list[field].type !== "number" &&
                 list[field].type !== "date" &&
                 list[field].type !== "time" &&
@@ -332,8 +404,8 @@ const ModalForm: React.FC<IModalForm> = ({
                   help={validate[field].help}
                 >
                   <Input
-                  value={data[field]}
-                  onChange={(e)=>onChange(e.target.value,field)}
+                    value={data[field]}
+                    onChange={(e) => onChange(e.target.value, field)}
                   />
                 </Form.Item>
               )}
@@ -345,9 +417,9 @@ const ModalForm: React.FC<IModalForm> = ({
                   validateStatus={validate[field].validateStatus}
                   help={validate[field].help}
                 >
-                  <InputNumber 
-                  value={data[field]}
-                  onChange={(v)=>onChange(v,field)}
+                  <InputNumber
+                    value={data[field]}
+                    onChange={(v) => onChange(v, field)}
                   />
                 </Form.Item>
               )}
@@ -363,7 +435,7 @@ const ModalForm: React.FC<IModalForm> = ({
                     style={{ width: "100%" }}
                     format="YYYY-MM-DD"
                     value={moment(data[field]).isValid() ? moment(data[field]) : undefined}
-                    onChange={(date: moment.Moment | null, value: string)=>{onChange(value,field)}}
+                    onChange={(date: moment.Moment | null, value: string) => { onChange(value, field) }}
                   />
                 </Form.Item>
               )}
@@ -379,7 +451,7 @@ const ModalForm: React.FC<IModalForm> = ({
                     style={{ width: "100%" }}
                     format="HH:mm"
                     value={moment(data[field]).isValid() ? moment(data[field]) : undefined}
-                    onChange={(date: moment.Moment | null, value: string)=>{onChange(value,field)}}
+                    onChange={(date: moment.Moment | null, value: string) => { onChange(value, field) }}
                   />
                 </Form.Item>
               )}
@@ -408,10 +480,27 @@ const ModalForm: React.FC<IModalForm> = ({
                     {renderPairEditSelect(list[field], field)}
                   </Form.Item>
                 )}
-
+              {list[field].editable !== false &&
+                list[field].type &&
+                list[field].type == "Pic" && (
+                  <Form.Item
+                    style={{ margin: "12px 0" }}
+                    label={list[field].text}
+                    name={field}
+                    getValueFromEvent={(e) => {
+                      if (e && e.file && e.file.save_path) {
+                        return e.file.save_path
+                      }
+                    }}
+                    rules={[{ required: list[field].required, message: `请输入${list[field].text}` }]}
+                  >
+                    {renderPic(list[field], field, data[field])}
+                  </Form.Item>
+                )}
               {
                 list[field].editable !== false &&
                 list[field].type &&
+                list[field].type !== "Pic" &&
                 list[field].type !== "text" &&
                 list[field].type !== "number" &&
                 list[field].type !== "date" &&
@@ -424,7 +513,7 @@ const ModalForm: React.FC<IModalForm> = ({
                     required={list[field].required}
                     validateStatus={validate[field].validateStatus}
                     help={validate[field].help}
-                    >
+                  >
                     {renderEnumSelect(list[field], field)}
                   </Form.Item>
                 )}

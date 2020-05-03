@@ -5,13 +5,14 @@ import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import renderHeaderBtns from '@/components/PageHeaderWrapper/headerBtns';
 
 import { useActionBtn } from '@/utils/ActionPageHooks';
-import { submit, get, read } from '@/utils/req';
+import { submit, read, upload } from '@/utils/req';
 import { router } from 'umi';
 import styles from './edit.less';
 import { getEnum } from '@/utils/enum';
 import { getActionConfig } from '@/utils/utils';
 import { Iitin } from './components/interface';
 import ItinInfo from './components/itin';
+import { PlusOutlined } from '@ant-design/icons';
 
 const renderOptions = (options: object) => {
     return (
@@ -21,6 +22,31 @@ const renderOptions = (options: object) => {
             </Select.Option>
         ))
     )
+}
+const imgUploadCheck = (file: File) => {
+    const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
+    if (!isJpgOrPng) {
+        message.error('请上传 JPG/PNG 图片!');
+        return isJpgOrPng;
+    }
+    return isJpgOrPng;
+}
+
+const uploadArea = () => {
+    return (
+        <>
+            <PlusOutlined />
+            <div className="ant-upload-text">上传</div>
+        </>
+    )
+}
+
+
+interface Ipic {
+    uid: string,
+    name: string,
+    status: string,
+    url: string
 }
 
 interface Iinfo {
@@ -33,13 +59,7 @@ interface Iinfo {
     day: number,
     night: number,
     theme_arr: Array<string>,
-}
-
-interface Ipic {
-    uid: string,
-    name: string,
-    status: string,
-    url: string
+    pic_arr: Array<Ipic>,
 }
 
 const Page: React.FC<IActionPageProps> = ({ route, location }) => {
@@ -55,8 +75,11 @@ const Page: React.FC<IActionPageProps> = ({ route, location }) => {
         destination: '',
         day: 0,
         night: 0,
-        theme_arr: [],
+        pic_arr: [],
+        theme_arr: []
     });
+
+    const [brightSpot, setBrightSpot] = useState<string>('');
 
     const [bookInfo, setBook] = useState<string>('');
     const [feeInfo, setFeeInfo] = useState<string>('');
@@ -64,42 +87,22 @@ const Page: React.FC<IActionPageProps> = ({ route, location }) => {
     const [feeExclude, setExclude] = useState<string>('');
     const [cancelInfo, setCancelInfo] = useState<string>('');
 
-    const [picArr, setPicArr] = useState<Ipic[]>([]);
-
     const cfg = getActionConfig(viewConfig);
 
     const [itinInfo, setItinInfo] = useState<Iitin[]>([]);
 
     useEffect(() => {
-        if(cfg.read){
-            read(cfg.read.url,{action:authority},{...ref},cfg.read.data).then(r => {
-                if(r.data){
+        if (cfg.read) {
+            read(cfg.read.url, { action: authority }, { ...ref }, cfg.read.data).then(r => {
+                if (r.data) {
                     let loadBase = r.data['baseInfo'];
                     let theme_arr = [];
                     if (r.data['theme_arr']) {
                         theme_arr = r.data['theme_arr'];
                     }
-                    setBaseInfo({...loadBase,theme_arr});
-                    if(r.data['ticket_itin']){
-                        setItinInfo(r.data['ticket_itin']);
-                    }
-                    if(r.data['bookInfo']){
-                        setBook(r.data['bookInfo']);
-                    }
-                    if(r.data['feeInfo']){
-                        setFeeInfo(r.data['feeInfo']);
-                    }
-                    if(r.data['feeInclude']){
-                        setfeeInclude(r.data['feeInclude']);
-                    }
-                    if(r.data['feeExclude']){
-                        setExclude(r.data['feeExclude']);
-                    }
-                    if(r.data['cancelInfo']){
-                        setCancelInfo(r.data['cancelInfo']);
-                    }
-                    if(r.data['pic']){
-                        const arr = r.data['pic'].map((url: string) => {
+                    let pic_arr = [];
+                    if (r.data['pic_arr']) {
+                        pic_arr = r.data['pic_arr'].map((url: string) => {
                             return {
                                 uid: url,
                                 name: url,
@@ -107,11 +110,51 @@ const Page: React.FC<IActionPageProps> = ({ route, location }) => {
                                 url: url,
                             }
                         })
-                        setPicArr(arr);
+                    }
+                    setBaseInfo({ ...loadBase, pic_arr, theme_arr });
+                    if (r.data['itinInfo']) {
+                        let loaditin = r.data['itinInfo'].map((itin: any) => {
+                            if (itin['pic_arr'] && itin['pic_arr'].length > 0) {
+                                return {
+                                    ...itin,
+                                    pic_arr: itin['pic_arr'].map((url: string) => {
+                                        return {
+                                            uid: url,
+                                            name: url,
+                                            status: 'done',
+                                            url: url,
+                                        }
+                                    })
+                                }
+                            }
+                            return {
+                                ...itin,
+                                pic_arr: []
+                            }
+                        })
+                        setItinInfo([...loaditin])
+                    }
+                    if (r.data['brightSpot']) {
+                        setBrightSpot(r.data['brightSpot']);
+                    }
+                    if (r.data['bookInfo']) {
+                        setBook(r.data['bookInfo']);
+                    }
+                    if (r.data['feeInfo']) {
+                        setFeeInfo(r.data['feeInfo']);
+                    }
+                    if (r.data['feeInclude']) {
+                        setfeeInclude(r.data['feeInclude']);
+                    }
+                    if (r.data['feeExclude']) {
+                        setExclude(r.data['feeExclude']);
+                    }
+                    if (r.data['cancelInfo']) {
+                        setCancelInfo(r.data['cancelInfo']);
                     }
                 }
-            },(e:any)=>{
-                
+            }, (e: any) => {
+
             })
         }
     }, [])
@@ -119,28 +162,30 @@ const Page: React.FC<IActionPageProps> = ({ route, location }) => {
     const onOk = () => {
         if (cfg.submit) {
             const checkFields = {
-                'name':'船票名称',
-                'cruise_company_id':'邮轮公司',
-                'ship_id':'邮轮',
-                'pd_num':'航线编号'
+                'name': '产品名称',
+                'cruise_company_id': '邮轮公司',
+                'ship_id': '邮轮',
+                'pd_num': '航线编号',
+                'day': '天数',
+                'night': '晚数'
             }
             let check = true;
             let checkInfo = '';
-            Object.keys(checkFields).forEach(field=>{
-                if(baseInfo[field] === '' && check){
+            Object.keys(checkFields).forEach(field => {
+                if (baseInfo[field] === '' && check) {
                     check = false;
                     checkInfo = checkFields[field]
                 }
             })
-            if(!check){
+            if (!check) {
                 message.error(`${checkInfo}不能为空`);
                 return;
             }
-            if(itinInfo.length != baseInfo.day){
+            if (itinInfo.length != baseInfo.day) {
                 Modal.confirm({
-                    title:'警告',
-                    content:'产品天数与行程不相符,确认提交吗？',
-                    onOk:()=>{
+                    title: '警告',
+                    content: '产品天数与行程不相符,确认提交吗？',
+                    onOk: () => {
                         const post_data = {
                             baseInfo: {
                                 name: baseInfo.name,
@@ -152,14 +197,25 @@ const Page: React.FC<IActionPageProps> = ({ route, location }) => {
                                 day: baseInfo.day,
                                 night: baseInfo.night
                             },
-                            theme_arr:baseInfo.theme_arr,
-                            itinInfo,
-                            detailInfo:{
-                                bookInfo,feeInfo,feeInclude,feeExclude,cancelInfo
+                            theme_arr: baseInfo.theme_arr,
+                            pic_arr: baseInfo.pic_arr.map(item => item.url),
+                            itinInfo: itinInfo.map(itin => {
+                                return {
+                                    des: itin.des,
+                                    arr_time: itin.arr_time,
+                                    level_time: itin.level_time,
+                                    dep_city: itin.dep_city,
+                                    destination: itin.destination,
+                                    breakfast: itin.breakfast,
+                                    lunch: itin.lunch,
+                                    dinner: itin.dinner,
+                                    accommodation: itin.accommodation,
+                                    pic_arr: itin.pic_arr.map(item => item.url)
+                                }
+                            }),
+                            detailInfo: {
+                                brightSpot, bookInfo, feeInfo, feeInclude, feeExclude, cancelInfo
                             }
-                        }
-                        if (ref && ref['id']) {
-                            post_data['id'] = ref['id']
                         }
                         // @ts-ignore
                         submit(cfg.submit.url, post_data, cfg.submit.data).then((r: any) => {
@@ -181,14 +237,25 @@ const Page: React.FC<IActionPageProps> = ({ route, location }) => {
                     day: baseInfo.day,
                     night: baseInfo.night
                 },
-                theme_arr:baseInfo.theme_arr,
-                itinInfo,
-                detailInfo:{
-                    bookInfo,feeInfo,feeInclude,feeExclude,cancelInfo
+                theme_arr: baseInfo.theme_arr,
+                pic_arr: baseInfo.pic_arr.map(item => item.url),
+                itinInfo: itinInfo.map(itin => {
+                    return {
+                        des: itin.des,
+                        arr_time: itin.arr_time,
+                        level_time: itin.level_time,
+                        dep_city: itin.dep_city,
+                        destination: itin.destination,
+                        breakfast: itin.breakfast,
+                        lunch: itin.lunch,
+                        dinner: itin.dinner,
+                        accommodation: itin.accommodation,
+                        pic_arr: itin.pic_arr.map(item => item.url)
+                    }
+                }),
+                detailInfo: {
+                    brightSpot, bookInfo, feeInfo, feeInclude, feeExclude, cancelInfo
                 }
-            }
-            if (ref && ref['id']) {
-                post_data['id'] = ref['id']
             }
 
             submit(cfg.submit.url, post_data, cfg.submit.data).then((r: any) => {
@@ -214,49 +281,75 @@ const Page: React.FC<IActionPageProps> = ({ route, location }) => {
         setBaseInfo({ ...baseInfo });
     };
 
-    const changeDay = (value:any,field:string)=>{
+    const changeDay = (value: any, field: string) => {
         baseInfo[field] = value;
         setBaseInfo({ ...baseInfo });
         const newItin = [...itinInfo];
-        if(newItin.length < value){
+        if (newItin.length < value) {
             for (let index = newItin.length; index < value; index++) {
                 newItin.push({
-                    des:'',
-                    arr_time:'',
-                    level_time:'',
-                    dep_city:'',
-                    destination:'',
+                    des: '',
+                    arr_time: '',
+                    level_time: '',
+                    dep_city: '',
+                    destination: '',
+                    breakfast: '',
+                    lunch: '',
+                    dinner: '',
+                    accommodation: '',
+                    pic_arr: []
                 })
             }
         }
         setItinInfo(newItin);
     }
 
-    const changeShip = (value: any) => {
-        baseInfo.ship_id = value;
-        setBaseInfo({ ...baseInfo });
-        if (value !== null && value !== undefined && value !== '' && value !== '0' && value != 0) {
-            get('/productStore/Product/read_for_ship_pic', { ship_id: value }).then(
-                (r: {
-                    data: []
-                }) => {
-                    if (r.data) {
-                        const arr = r.data.map((url: string) => {
-                            return {
-                                uid: url,
-                                name: url,
-                                status: 'done',
-                                url: url,
-                            }
-                        })
-                        setPicArr(arr);
-                    }
+    const handleChange = (info: any) => {
+        if (info.file.status === 'uploading') {
+            return;
+        }
+        if (info.file.status === 'done') {
+            baseInfo.pic_arr.push(
+                {
+                    uid: info.file.pic,
+                    name: info.file.name,
+                    status: 'done',
+                    url: info.file.pic
                 }
             )
+            setBaseInfo({ ...baseInfo });
+        } else if (info.file.status === 'error') {
+            message.error(`${info.file.name} 文件上传失败.`);
         }
     };
 
+    const onRemove = (file: { uid: string }) => {
+        const index = baseInfo.pic_arr.findIndex((value) => value.uid === file.uid);
+        if (index !== -1) {
+            baseInfo.pic_arr.splice(index, 1);
+            setBaseInfo({ ...baseInfo });
+        }
+    }
 
+    const handleUpload = (prop: { file: File }) => {
+        const formData = new FormData();
+        const { file } = prop;
+        formData.append('file', file);
+        upload(formData, 'productPic').then(res => {
+            if (res.success && res.save_path) {
+                const fileinfo = { file: { status: 'done', name: file.name, pic: res.save_path } }
+                handleChange(fileinfo);
+            } else {
+                handleChange({ file: { status: 'error', name: file.name } });
+            }
+        }, () => {
+            handleChange({ file: { status: 'error', name: file.name } });
+        })
+    };
+
+    const handleBrightSpotChange = (v: string) => {
+        setBrightSpot(v);
+    }
     const handleBookChange = (v: string) => {
         setBook(v);
     };
@@ -268,17 +361,17 @@ const Page: React.FC<IActionPageProps> = ({ route, location }) => {
         >
             <Row style={{ backgroundColor: 'white', paddingLeft: '10px', paddingTop: '10px' }} className={styles.title}>
                 <Col span={12} >
-                    船票详情
+                    产品详情
                  </Col>
                 <Col span={12}>
-                    邮轮图片
+                    产品图片
                  </Col>
             </Row>
             <Row style={{ marginBottom: '20px', backgroundColor: 'white', paddingLeft: '10px' }}>
                 <Col span={12}>
                     <Row className={styles.row}>
                         <Col span={3} className={styles.cellLabel}>
-                            船票名称
+                            产品名称
                         </Col>
                         <Col span={20} className={styles.cellInput}>
                             <Input value={baseInfo.name} onChange={(e) => { changeBaseInfo(e.target.value, 'name') }} />
@@ -317,7 +410,7 @@ const Page: React.FC<IActionPageProps> = ({ route, location }) => {
                                 style={{ width: '100%' }}
                                 showSearch
                                 optionFilterProp='children'
-                                onChange={(v) => changeShip(v)}
+                                onChange={(v) => changeBaseInfo(v, 'ship_id')}
                                 value={baseInfo.ship_id}
                             >
                                 {
@@ -403,29 +496,40 @@ const Page: React.FC<IActionPageProps> = ({ route, location }) => {
                 </Col>
                 <Col span={12} style={{ marginTop: '12px' }}>
                     {
-                        picArr.length !== 0 &&
                         <Upload
                             name="pictureList"
                             listType="picture-card"
                             // @ts-ignore
-                            fileList={picArr}
-                            disabled
-                        />
+                            fileList={baseInfo.pic_arr}
+                            beforeUpload={imgUploadCheck}
+                            onChange={info => handleChange(info)}
+                            customRequest={({ file }) => handleUpload({ file })}
+                            onRemove={(file) => onRemove(file)}
+                        >
+                            {uploadArea()}
+                        </Upload>
                     }
                 </Col>
             </Row>
-            <Tabs defaultActiveKey="行程概况" size='large'
+            <Tabs defaultActiveKey="行程亮点" size='large'
                 style={{ backgroundColor: 'white' }}
                 renderTabBar={(props, DefaultTabBar) =>
                     <DefaultTabBar {...props} className={styles.tabBar} />}
             >
+                <Tabs.TabPane tab="行程亮点" key="行程亮点">
+                    <Row>
+                        <Col span={24} className="editor-wrapper" style={{ backgroundColor: 'white' }}>
+                            <Input.TextArea autoSize value={brightSpot} style={{ width: '100%', minHeight: '190px' }} onChange={(e) => handleBrightSpotChange(e.target.value)} />
+                        </Col>
+                    </Row>
+                </Tabs.TabPane>
                 <Tabs.TabPane tab="行程概况" key="行程概况">
                     <ItinInfo info={itinInfo} update={setItinInfo} />
                 </Tabs.TabPane>
                 <Tabs.TabPane tab="预订须知" key="预订须知">
                     <Row>
                         <Col span={24} className="editor-wrapper" style={{ backgroundColor: 'white' }}>
-                            <Input.TextArea autoSize value={bookInfo} style={{ width: '100%', minHeight: '104px' }} onChange={(e) => handleBookChange(e.target.value)} />
+                            <Input.TextArea autoSize value={bookInfo} style={{ width: '100%', minHeight: '190px' }} onChange={(e) => handleBookChange(e.target.value)} />
                         </Col>
                     </Row>
                 </Tabs.TabPane>

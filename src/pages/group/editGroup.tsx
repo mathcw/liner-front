@@ -25,6 +25,10 @@ interface IBlock {
     addPriceRow: () => void;
     deletePrice: (priceIndex: number) => void,
 }
+
+const limit = (v:string) =>{
+    return v.replace(/^(0+)|[^\d]+/g,'')
+}
 class Block extends React.Component<IBlock>{
     onChange = (v: string) => {
         const { update } = this.props;
@@ -86,10 +90,10 @@ class Block extends React.Component<IBlock>{
                                     <Input value={item.location} onChange={(e) => this.eidtDetail(e.target.value, index, 'location')} style={{ width: '90%' }} />
                                 </Col> */}
                                 <Col span={6}>
-                                    <InputNumber value={item.price} onChange={(v) => this.eidtDetail(v, index, 'price')} style={{ width: '90%' }} min={1} />
+                                    <InputNumber step={1} value={item.price} onChange={(v) => this.eidtDetail(v, index, 'price')} style={{ width: '90%' }} min={1} formatter={limit} parser={limit}/>
                                 </Col>
                                 <Col span={6}>
-                                    <InputNumber value={item.duoren_price} onChange={(v) => this.eidtDetail(v, index, 'duoren_price')} style={{ width: '90%' }} />
+                                    <InputNumber step={1} value={item.duoren_price} onChange={(v) => this.eidtDetail(v, index, 'duoren_price')} style={{ width: '90%' }} formatter={limit} parser={limit}/>
                                 </Col>
                                 <Col span={2}>
                                     <MinusCircleFilled onClick={() => this.deleteDetail(index)} style={{ color: 'red' }} />

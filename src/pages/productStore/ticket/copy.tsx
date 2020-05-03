@@ -158,9 +158,6 @@ const Page: React.FC<IActionPageProps> = ({ route, location }) => {
                                 bookInfo,feeInfo,feeInclude,feeExclude,cancelInfo
                             }
                         }
-                        if (ref && ref['id']) {
-                            post_data['id'] = ref['id']
-                        }
                         // @ts-ignore
                         submit(cfg.submit.url, post_data, cfg.submit.data).then((r: any) => {
                             message.success(r.message);
@@ -186,9 +183,6 @@ const Page: React.FC<IActionPageProps> = ({ route, location }) => {
                 detailInfo:{
                     bookInfo,feeInfo,feeInclude,feeExclude,cancelInfo
                 }
-            }
-            if (ref && ref['id']) {
-                post_data['id'] = ref['id']
             }
 
             submit(cfg.submit.url, post_data, cfg.submit.data).then((r: any) => {

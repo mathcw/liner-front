@@ -62,7 +62,6 @@ interface Iinfo {
 const Page: React.FC<IActionPageProps> = ({ route, location }) => {
     const { authority, viewConfig } = route;
     const { state: ref } = location;
-
     const [baseInfo, setBaseInfo] = useState<Iinfo>({
         name: '',
         dep_city_id: '',
@@ -273,6 +272,29 @@ const Page: React.FC<IActionPageProps> = ({ route, location }) => {
         setBaseInfo({ ...baseInfo });
     };
 
+    const changeDay = (value:any,field:string)=>{
+        baseInfo[field] = value;
+        setBaseInfo({ ...baseInfo });
+        const newItin = [...itinInfo];
+        if(newItin.length < value){
+            for (let index = newItin.length; index < value; index++) {
+                newItin.push({
+                    des:'',
+                    arr_time:'',
+                    level_time:'',
+                    dep_city:'',
+                    destination:'',
+                    breakfast:'',
+                    lunch:'',
+                    dinner:'',
+                    accommodation:'',
+                    pic_arr: []
+                })
+            }
+        }
+        setItinInfo(newItin);
+    }
+
     const handleChange = (info: any) => {
         if (info.file.status === 'uploading') {
             return;
@@ -386,7 +408,7 @@ const Page: React.FC<IActionPageProps> = ({ route, location }) => {
                         <Col span={8} className={styles.cellInput}>
                             <InputNumber style={{ width: '100%' }} min={0}
                                 value={baseInfo.day}
-                                onChange={(v) => changeBaseInfo(v, 'day')} />
+                                onChange={(v) => changeDay(v, 'day')} />
                         </Col>
                         <Col span={3} className={styles.cellLabel} style={{ marginLeft: '10px' }}>
                             晚数

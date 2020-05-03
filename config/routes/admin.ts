@@ -141,6 +141,15 @@ const routes: Array<IRouteValue> = [
           },
 
           {
+            path: "/productStore/ticket/copy",
+            name: "复制单船票",
+            authority: "复制产品",
+            viewConfig: "复制单船票",
+            hideInMenu: true,
+            component: "./productStore/ticket/copy"
+          },
+
+          {
             path: "/productStore/youlun/add",
             name: "新增邮轮套餐",
             authority: "新增产品",
@@ -155,6 +164,14 @@ const routes: Array<IRouteValue> = [
             viewConfig: "修改邮轮套餐",
             hideInMenu: true,
             component: "./productStore/youlun/edit"
+          },
+          {
+            path: "/productStore/youlun/copy",
+            name: "复制邮轮套餐",
+            authority: "复制产品",
+            viewConfig: "复制邮轮套餐",
+            hideInMenu: true,
+            component: "./productStore/youlun/copy"
           },
           {
             path: "/productStore/helun/add",
@@ -173,6 +190,14 @@ const routes: Array<IRouteValue> = [
             component: "./productStore/helun/edit"
           },
           {
+            path: "/productStore/helun/copy",
+            name: "复制河轮套餐",
+            authority: "复制产品",
+            viewConfig: "复制河轮套餐",
+            hideInMenu: true,
+            component: "./productStore/helun/copy"
+          },
+          {
             path: "/productStore/tour/add",
             name: "新增跟团游",
             authority: "新增跟团游",
@@ -187,6 +212,14 @@ const routes: Array<IRouteValue> = [
             viewConfig: "修改跟团游",
             hideInMenu: true,
             component: "./productStore/tour/edit"
+          },
+          {
+            path: "/productStore/tour/copy",
+            name: "复制跟团游",
+            authority: "复制跟团游",
+            viewConfig: "复制跟团游",
+            hideInMenu: true,
+            component: "./productStore/tour/copy"
           },
         ]
       },
