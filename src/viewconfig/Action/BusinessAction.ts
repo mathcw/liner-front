@@ -40,6 +40,15 @@ const config: ActionConfigItem = {
             提交: { text: "提交" }
         }
     },
+
+    删除轮播图: {
+        directlySubmit: true,
+        confirm:'确认删除轮播图吗?',
+        submit: {
+          url: "/business/Banner/destroy",
+          data: { id: "id"}
+        }
+      }
 };
 
 export default config;

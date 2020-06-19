@@ -103,6 +103,13 @@ const routes: Array<IRouteValue> = [
             hideInMenu: true,
             component: "./business/cruise/edit"
           },
+          {
+            path: "/business/banner/list",
+            name: "轮播图设置",
+            authority: "轮播图设置",
+            viewConfig:"轮播图设置",
+            component: "./business/banner/list"
+          },
         ]
       },
       {

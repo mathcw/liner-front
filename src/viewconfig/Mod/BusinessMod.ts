@@ -86,6 +86,23 @@ const config: ModConfigItem = {
         pageSizeOptions: ["10", "20", "30", "50", "100"],
         pageSize: 100
     },
+    '轮播图设置': {
+        read: { url: "/business/Banner/read" },
+        title: "轮播图设置",
+        textSearch: {
+        },
+        dropDownSearch: {
+        },
+        headerButtons: {
+            新增轮播图: { text: "新增" }
+        },
+        rowButtons: {
+            修改轮播图: { text: "修改" },
+            删除轮播图: { text: "删除"}
+        },
+        pageSizeOptions: ["10", "20", "30", "50", "100"],
+        pageSize: 100
+    },
 }
 
 export default config;

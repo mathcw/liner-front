@@ -492,7 +492,9 @@ const ModalForm: React.FC<IModalForm> = ({
                         return e.file.save_path
                       }
                     }}
-                    rules={[{ required: list[field].required, message: `请输入${list[field].text}` }]}
+                    required={list[field].required}
+                    validateStatus={validate[field].validateStatus}
+                    help={validate[field].help}
                   >
                     {renderPic(list[field], field, data[field])}
                   </Form.Item>
